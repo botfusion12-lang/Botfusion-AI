@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BotFusion AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- CSS CONNECTION (IMPORTANT) -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2 class="logo">BotFusion</h2>
+
+    <button class="new-chat">➕ New chat</button>
+
+    <div class="history">
+      <p class="section-title">Today</p>
+      <div class="chat-item">First chat</div>
+    </div>
+
+    <div class="bottom-menu">
+      <button class="menu-btn">⚙ Settings</button>
+      <button class="menu-btn">👤 Account</button>
+    </div>
+  </aside>
+
+  <!-- MAIN CHAT AREA -->
+  <main class="chat-area">
+    <div class="chat-header">
+      <h3>How can I help you today?</h3>
+    </div>
+
+    <div id="chat-box" class="chat-box">
+      <!-- Messages appear here -->
+    </div>
+
+    <!-- INPUT BAR -->
+    <div class="input-bar">
+      <input
+        type="text"
+        id="user-input"
+        placeholder="Message BotFusion..."
+      />
+      <button onclick="sendMessage()">➤</button>
+    </div>
+  </main>
+
+</div>
+
+<!-- JS CONNECTION -->
+<script src="script.js"></script>
+</body>
+</html>
