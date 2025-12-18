@@ -1,27 +1,28 @@
-const chatBox = document.getElementById("chat-box");
-const input = document.getElementById("user-input");
-
-function addMessage(text, sender) {
-  const div = document.createElement("div");
-  div.className = `message ${sender}`;
-  div.innerText = text;
-  chatBox.appendChild(div);
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
+const languageSelect = document.getElementById("languageSelect");
 
 async function sendMessage() {
-  const message = input.value.trim();
-  if (!message) return;
+  const userMsg = input.value.trim();
+  if (!userMsg) return;
 
-  addMessage(message, "user");
+  addMessage(userMsg, "user");
   input.value = "";
 
-  const res = await fetch("http://localhost:8000/api/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message })
-  });
+  const selectedLang = languageSelect.value;
 
-  const data = await res.json();
-  addMessage(data.reply, "bot");
+  try {
+    const res = await fetch("https://YOUR-BACKEND-URL/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: userMsg,
+        language: selectedLang
+      })
+    });
+
+    const data = await res.json();
+    addMessage(data.reply, "bot");
+
+  } catch {
+    addMessage("⚠️ Server error", "bot");
+  }
 }
