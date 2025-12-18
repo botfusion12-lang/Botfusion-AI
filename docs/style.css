@@ -4,7 +4,13 @@
   box-sizing: border-box;
   font-family: Arial, sans-serif;
 }
-
+#languageSelect {
+  background: #1e1e1e;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 6px 8px;
+}
 body {
   background: #0f0f0f;
   color: #fff;
