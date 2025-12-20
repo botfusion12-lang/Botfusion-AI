@@ -1,62 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
 <title>BotFusion AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-/* ===== RESET ===== */
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
-body{display:flex;height:100vh;background:#2e2e2e;color:dark grey}
-/* ===== SIDEBAR ===== */
-.sidebar{width:260px;background:#3a3a3a;display:flex;flex-direction:column;border-right:1px solid #1f2937}
-.brand{display:flex;align-items:center;gap:10px;padding:16px;border-bottom:1px solid #1f2937}
-.brand svg{width:36px;height:36px}
-.brand-name{font-size:18px;font-weight:600}
-.new-chat{margin:12px;padding:12px;background:#111827;border-radius:8px;text-align:center;cursor:pointer}
-.history{flex:1;padding:12px;font-size:13px;color:#9ca3af}
-.sidebar-footer{border-top:1px solid #1f2937;padding:12px}
-.sidebar-footer div{padding:10px;cursor:pointer;border-radius:6px}
-.sidebar-footer div:hover{background:#111827}
-/* ===== MAIN ===== */
-.main{flex:1;display:flex;flex-direction:column}
-.topbar{height:56px;display:flex;justify-content:space-between;align-items:center;padding:0 16px;border-bottom:1px solid #1f2937}
-.language-select{background:#020617;color:#e5e7eb;border:1px solid #1f2937;padding:6px;border-radius:6px}
-/* ===== CHAT ===== */
-.chat{flex:1;padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
-.message{max-width:70%;padding:12px;border-radius:10px}
-.user{background:#2563eb;align-self:flex-end}
-.bot{background:#111827}
-/* ===== INPUT ===== */
-.input-bar{display:flex;gap:10px;padding:16px;border-top:1px solid #1f2937}
-.input-bar input{flex:1;padding:12px;background:#020617;border:1px solid #1f2937;border-radius:8px;color:#fff}
-.input-bar button{padding:12px 16px;background:#2563eb;border:none;border-radius:8px;cursor:pointer}
+body {
+  margin: 0;
+  font-family: system-ui;
+  background: #0b0f14;
+  color: #e5e7eb;
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  background: #0f172a;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.logo img {
+  width: 36px;
+}
+
+.new-chat {
+  margin: 20px 0;
+  padding: 10px;
+  border-radius: 8px;
+  background: #22d3ee;
+  color: black;
+  border: none;
+}
+
+.history {
+  flex: 1;
+  overflow-y: auto;
+  font-size: 14px;
+}
+
+.history div {
+  padding: 6px;
+  cursor: pointer;
+}
+
+.bottom {
+  border-top: 1px solid #1e293b;
+  padding-top: 10px;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 10px;
+  border-bottom: 1px solid #1e293b;
+  display: flex;
+  justify-content: space-between;
+}
+
+.chat {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.msg {
+  margin-bottom: 12px;
+}
+
+.user {
+  color: #22d3ee;
+}
+
+.ai {
+  color: #a7f3d0;
+}
+
+.input-bar {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #1e293b;
+}
+
+input {
+  flex: 1;
+  padding: 10px;
+  background: #020617;
+  border: none;
+  color: white;
+  border-radius: 8px;
+}
+
+button {
+  margin-left: 8px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+}
 </style>
 </head>
+
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
-  <div class="brand">
-    <svg viewBox="0 0 64 64" fill="none">
-      <path d="M32 4C20 4 10 14 10 26v12c0 6 4 10 10 10h2v8l8-8h6c12 0 22-10 22-22S44 4 32 4z" stroke="#38bdf8" stroke-width="3"/>
-      <circle cx="24" cy="28" r="3" fill="#38bdf8"/>
-      <circle cx="40" cy="28" r="3" fill="#38bdf8"/>
-    </svg>
-    <span class="brand-name">BotFusion AI</span>
+  <div class="logo">
+    <img src="logo.svg">
+    BotFusion
   </div>
-  <div class="new-chat" onclick="newChat()">+ New Chat</div>
-  <div class="history" id="history">No chats yet</div>
-  <div class="sidebar-footer">
-    <div onclick="openSettings()">⚙ Settings</div>
-    <div onclick="login()">👤 Account</div>
+
+  <button class="new-chat" onclick="newChat()">+ New Chat</button>
+
+  <div class="history" id="history"></div>
+
+  <div class="bottom">
+    ⚙ Settings<br>
+    👤 Account
   </div>
 </div>
 
-<!-- MAIN -->
 <div class="main">
-  <div class="topbar">
-    <span>AI Chat</span>
+  <div class="header">
+    <div>AI Chat</div>
+    <select id="lang">
     <select name="language" id="language">
   <option value="af">Afrikaans</option>
   <option value="sq">Albanian</option>
@@ -166,53 +246,97 @@ body{display:flex;height:100vh;background:#2e2e2e;color:dark grey}
   <div class="chat" id="chat"></div>
 
   <div class="input-bar">
-    <input type="text" id="input" placeholder="Message BotFusion..." />
-    <button onclick="sendMessage()">➤</button>
+    <input id="msg" placeholder="Message BotFusion...">
+    <button onclick="send()">➤</button>
+    <button onclick="genImage()">🖼</button>
   </div>
 </div>
 
 <script>
-const chat = document.getElementById("chat");
-const input = document.getElementById("input");
-const lang = document.getElementById("lang");
+let chats = JSON.parse(localStorage.getItem("chats") || "[]");
+let current = [];
 
-function addMessage(text, type){
-  const div = document.createElement("div");
-  div.className = "message " + type;
-  div.innerText = text;
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
+function save() {
+  localStorage.setItem("chats", JSON.stringify(chats));
 }
 
-function saveHistory(text){
-  let history = JSON.parse(localStorage.getItem("botfusion"))||[];
-  history.push(text);
-  localStorage.setItem("botfusion",JSON.stringify(history));
-  document.getElementById("history").innerText = history.slice(-5).join("\n");
+function renderHistory() {
+  const h = document.getElementById("history");
+  h.innerHTML = "";
+  chats.forEach((c, i) => {
+    const d = document.createElement("div");
+    d.textContent = c.title;
+    d.onclick = () => loadChat(i);
+    h.appendChild(d);
+  });
 }
 
-function newChat(){
-  chat.innerHTML="";
+function newChat() {
+  if (current.length) {
+    chats.unshift({ title: current[0].text.slice(0,20), messages: current });
+    save();
+  }
+  current = [];
+  document.getElementById("chat").innerHTML = "";
+  renderHistory();
 }
 
-function sendMessage(){
-  if(!input.value) return;
-  addMessage(input.value,"user");
-  saveHistory("You: "+input.value);
-  const message=input.value;
-  const language=lang.value;
-  input.value="";
-  fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,language})})
-  .then(r=>r.json())
-  .then(d=>{
-    addMessage(d.reply,"bot");
-    saveHistory("Bot: "+d.reply);
-  }).catch(()=>{addMessage("⚠️ Error connecting to server.","bot")});
+function loadChat(i) {
+  current = chats[i].messages;
+  const chat = document.getElementById("chat");
+  chat.innerHTML = "";
+  current.forEach(m => addMsg(m.text, m.role));
 }
 
-function openSettings(){alert("Settings placeholder");}
-function login(){alert("Login placeholder");}
-window.onload=()=>{let h=JSON.parse(localStorage.getItem("botfusion"))||[];if(h.length) document.getElementById("history").innerText=h.slice(-5).join("\n");}
+function addMsg(text, role) {
+  const d = document.createElement("div");
+  d.className = "msg " + role;
+  d.textContent = text;
+  document.getElementById("chat").appendChild(d);
+}
+
+async function send() {
+  const input = document.getElementById("msg");
+  const text = input.value;
+  if (!text) return;
+
+  addMsg(text, "user");
+  current.push({ role: "user", text });
+  input.value = "";
+
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message: text,
+      language: document.getElementById("lang").value
+    })
+  });
+
+  const data = await res.json();
+  addMsg(data.reply, "ai");
+  current.push({ role: "ai", text: data.reply });
+}
+
+async function genImage() {
+  const prompt = prompt("Describe image");
+  if (!prompt) return;
+
+  const res = await fetch("/api/image", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt })
+  });
+
+  const data = await res.json();
+  addMsg("Image generated:", "ai");
+  const img = document.createElement("img");
+  img.src = data.url;
+  img.style.maxWidth = "100%";
+  document.getElementById("chat").appendChild(img);
+}
+
+renderHistory();
 </script>
 
 </body>
