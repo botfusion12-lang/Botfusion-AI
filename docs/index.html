@@ -5,32 +5,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BotFusion AI</title>
 
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif;}
-body{background:#1e1f22;color:#e6e6e6;height:100vh;display:flex;}
-.sidebar{width:260px;background:#141414;display:flex;flex-direction:column;border-right:1px solid #2a2a2a;}
-.logo{padding:18px;font-size:20px;font-weight:bold;text-align:center;border-bottom:1px solid #2a2a2a;}
-.new-chat{margin:12px;padding:10px;background:#2b2b2b;border-radius:6px;cursor:pointer;text-align:center;}
-.new-chat:hover{background:#3a3a3a;}
-.history{flex:1;overflow-y:auto;padding:10px;}
-.history-item{padding:8px;border-radius:6px;cursor:pointer;margin-bottom:6px;background:#1f1f1f;}
-.history-item:hover{background:#2f2f2f;}
-.bottom-menu{border-top:1px solid #2a2a2a;}
-.menu-item{padding:12px;cursor:pointer;}
-.menu-item:hover{background:#2a2a2a;}
-.main{flex:1;display:flex;flex-direction:column;}
-.top-bar{height:56px;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;justify-content:space-between;padding:0 16px;}
-.lang-select{background:#2b2b2b;border:none;color:white;padding:6px;border-radius:4px;}
-.chat-container{flex:1;overflow-y:auto;padding:20px;}
-.message{max-width:70%;padding:12px;margin-bottom:12px;border-radius:10px;line-height:1.4;}
-.user{background:#3b3b3b;margin-left:auto;}
-.bot{background:#262626;}
-.input-area{border-top:1px solid #2a2a2a;padding:12px;display:flex;gap:10px;}
-.input-area input{flex:1;padding:12px;border-radius:8px;border:none;background:#2b2b2b;color:white;}
-.input-area button{background:#4b4b4b;border:none;color:white;padding:0 16px;border-radius:8px;cursor:pointer;}
-.input-area button:hover{background:#5a5a5a;}
-.image-area{padding:12px;border-top:1px solid #2a2a2a;display:flex;gap:10px;flex-wrap:wrap;}
-.generated-image{width:120px;height:120px;border-radius:8px;object-fit:cover;margin:6px;}
+/* RESET */
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
+body { display:flex; height:100vh; background:#121212; color:#f1f1f1; overflow:hidden; }
+
+/* SIDEBAR */
+.sidebar { width:280px; background:#1f1f1f; display:flex; flex-direction:column; border-right:1px solid #2a2a2a; }
+.sidebar .logo { padding:20px; font-size:22px; font-weight:700; text-align:center; background:linear-gradient(90deg,#7C4DFF,#BB86FC); -webkit-background-clip:text; color:transparent; }
+.sidebar .menu { flex:1; overflow-y:auto; margin-top:10px; }
+.menu-item { padding:14px 20px; display:flex; align-items:center; gap:12px; cursor:pointer; border-radius:8px; transition:0.2s; }
+.menu-item:hover { background:#2a2a2a; }
+.menu-item i { font-size:18px; }
+
+/* BOTTOM MENU */
+.bottom-menu { border-top:1px solid #2a2a2a; padding:10px; display:flex; flex-direction:column; gap:8px; }
+.bottom-menu button { padding:10px; border:none; border-radius:8px; cursor:pointer; background:#2b2b2b; color:white; transition:0.2s; }
+.bottom-menu button:hover { background:#3a3a3a; }
+
+/* MAIN AREA */
+.main { flex:1; display:flex; flex-direction:column; background:#181818; }
+.top-bar { height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; border-bottom:1px solid #2a2a2a; }
+.top-bar select { background:#2b2b2b; border:none; border-radius:6px; padding:6px 12px; color:white; cursor:pointer; }
+
+/* CHAT AREA */
+.chat-container { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:12px; }
+.message { max-width:70%; padding:14px 18px; border-radius:12px; line-height:1.4; position:relative; word-wrap:break-word; }
+.user { align-self:flex-end; background:#3b3b3b; }
+.bot { align-self:flex-start; background:#262626; border:1px solid #2a2a2a; }
+.message span.time { position:absolute; bottom:-16px; right:10px; font-size:10px; color:#999; }
+
+/* IMAGE AREA */
+.image-area { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:12px; padding:12px; }
+.generated-image { width:100%; height:120px; object-fit:cover; border-radius:8px; transition:0.2s; }
+.generated-image:hover { transform:scale(1.05); }
+
+/* INPUT AREA */
+.input-area { display:flex; gap:10px; padding:12px 20px; border-top:1px solid #2a2a2a; }
+.input-area input { flex:1; padding:12px 16px; border-radius:10px; border:none; background:#2b2b2b; color:white; }
+.input-area button { padding:0 16px; border:none; border-radius:10px; background:#7C4DFF; color:white; cursor:pointer; transition:0.2s; }
+.input-area button:hover { background:#BB86FC; }
 </style>
 
 <!-- Firebase SDK -->
@@ -39,7 +56,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// 🔴 Replace with your Firebase config
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "botfusion-ai.firebaseapp.com",
@@ -70,23 +86,25 @@ window.onAuthStateChanged = onAuthStateChanged;
 </head>
 <body>
 
-<!-- Sidebar -->
 <div class="sidebar">
   <div class="logo">🤖 BotFusion AI</div>
-  <div class="new-chat" onclick="newChat()">＋ New Chat</div>
-  <div class="history" id="history"></div>
+  <div class="menu">
+    <div class="menu-item" onclick="newChat()"><i class="fa-solid fa-plus"></i> New Chat</div>
+    <div class="menu-item" onclick="toggleHistory()"><i class="fa-solid fa-clock-rotate-left"></i> History</div>
+    <div class="menu-item" onclick="toggleSettings()"><i class="fa-solid fa-gear"></i> Settings</div>
+    <div class="menu-item" onclick="toggleProfile()"><i class="fa-solid fa-user"></i> Account</div>
+  </div>
   <div class="bottom-menu">
-    <div class="menu-item" onclick="googleLogin()">🔐 Sign in with Google</div>
-    <div class="menu-item" onclick="logout()">🚪 Logout</div>
-    <div class="menu-item">⚙️ Settings</div>
+    <button onclick="googleLogin()">🔐 Sign in with Google</button>
+    <button onclick="logout()">🚪 Logout</button>
   </div>
 </div>
 
-<!-- Main -->
 <div class="main">
   <div class="top-bar">
     <div>Chat</div>
-    <select name="language" id="language">
+   <select name="language" id="language">
+  <option>Auto Detect</option>
   <option value="af">Afrikaans</option>
   <option value="sq">Albanian</option>
   <option value="am">Amharic</option>
@@ -189,182 +207,84 @@ window.onAuthStateChanged = onAuthStateChanged;
   <option value="yi">Yiddish</option>
   <option value="yo">Yoruba</option>
   <option value="zu">Zulu</option>
-    </select>
+   </select>
   </div>
 
   <div class="chat-container" id="chat"></div>
   <div class="image-area" id="images"></div>
 
   <div class="input-area">
-    <input id="input" placeholder="Type a message..." />
+    <input id="input" placeholder="Type a message..."/>
     <button onclick="sendMessage()">Send</button>
-    <button onclick="generateImage()">🖼 Generate Image</button>
+    <button onclick="generateImage()"> Generate Image</button>
   </div>
 </div>
 
+<!-- Font Awesome for Icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
 <script type="module">
+// CHAT, IMAGE, FIREBASE FUNCTIONS
 const chat = document.getElementById("chat");
 const input = document.getElementById("input");
-const historyDiv = document.getElementById("history");
 const imageDiv = document.getElementById("images");
-let chats = [];
-let currentChat = null;
-let currentUser = null;
+let currentUser=null;
+let chats=[], currentChat=null;
 
-// ---------------- USER LOGIN ----------------
-window.googleLogin = async function(){
+// ------------------- LOGIN -------------------
+window.googleLogin=async function(){
   try{
-    const result = await signInWithPopup(auth, provider);
-    currentUser = result.user;
+    const result=await signInWithPopup(auth, provider);
+    currentUser=result.user;
     alert("Welcome "+currentUser.displayName);
-
-    const userRef = doc(db,"users",currentUser.uid);
-    const snap = await getDoc(userRef);
+    const userRef=doc(db,"users",currentUser.uid);
+    const snap=await getDoc(userRef);
     if(!snap.exists()){
-      await setDoc(userRef,{
-        name: currentUser.displayName,
-        email: currentUser.email,
-        photo: currentUser.photoURL,
-        createdAt: new Date()
-      });
+      await setDoc(userRef,{name:currentUser.displayName,email:currentUser.email,photo:currentUser.photoURL,createdAt:new Date()});
     }
-    loadUserChats();
-  }catch(err){
-    alert("Login failed");
-    console.error(err);
-  }
+  }catch(err){console.error(err);alert("Login failed");}
 };
 
-window.logout = async function(){
-  await signOutFirebase(auth);
-  currentUser = null;
-  chat.innerHTML="";
-  imageDiv.innerHTML="";
-  chats = [];
-  renderHistory();
-  alert("Logged out");
-};
+window.logout=async function(){await signOutFirebase(auth);currentUser=null;chats=[];chat.innerHTML="";imageDiv.innerHTML="";alert("Logged out");};
 
-onAuthStateChanged(auth,(user)=>{
-  if(user){
-    currentUser = user;
-    console.log("Logged in:",user.email);
-    loadUserChats();
-  }
-});
+onAuthStateChanged(auth,user=>{if(user)currentUser=user;});
 
-// ---------------- CHAT FUNCTIONS ----------------
+// ------------------- CHAT -------------------
 function addMessage(text,sender){
   const div=document.createElement("div");
   div.className="message "+sender;
-  div.innerText=text;
+  div.innerHTML=text+` <span class="time">${new Date().toLocaleTimeString()}</span>`;
   chat.appendChild(div);
   chat.scrollTop=chat.scrollHeight;
 }
-
-function newChat(){
-  currentChat={id:Date.now(),messages:[]};
-  chats.push(currentChat);
-  renderHistory();
-  chat.innerHTML="";
-}
-
-function renderHistory(){
-  historyDiv.innerHTML="";
-  chats.forEach(c=>{
-    const item=document.createElement("div");
-    item.className="history-item";
-    item.innerText="Chat "+c.id.toString().slice(-4);
-    item.onclick=()=>loadChat(c.id);
-    historyDiv.appendChild(item);
-  });
-}
-
-function loadChat(id){
-  const c=chats.find(x=>x.id===id);
-  if(!c) return;
-  currentChat=c;
-  chat.innerHTML="";
-  c.messages.forEach(m=>addMessage(m.text,m.sender));
-}
-
+function newChat(){currentChat={id:Date.now(),messages:[]};chats.push(currentChat);chat.innerHTML="";}
 async function sendMessage(){
-  if(!currentUser){alert("Please login first");return;}
+  if(!currentUser){alert("Please login");return;}
   const text=input.value.trim();
-  if(!text) return;
+  if(!text)return;
   addMessage(text,"user");
   currentChat.messages.push({text,sender:"user"});
   input.value="";
-
   try{
-    const res = await fetch("/api/chat",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({message:text,userId:currentUser.uid,language:document.getElementById("lang").value})
-    });
-    const data = await res.json();
+    const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:text,userId:currentUser.uid,language:document.getElementById("lang").value})});
+    const data=await res.json();
     addMessage(data.reply,"bot");
     currentChat.messages.push({text:data.reply,sender:"bot"});
-
-    const chatRef = doc(db,"users",currentUser.uid);
-    await updateDoc(chatRef,{
-      chats: arrayUnion({
-        chatId: currentChat.id,
-        messages: currentChat.messages,
-        updatedAt: new Date()
-      })
-    });
-  }catch(err){
-    addMessage("⚠️ Server error","bot");
-    console.error(err);
-  }
+  }catch(err){console.error(err);addMessage("⚠️ Server error","bot");}
 }
 
-// ---------------- LOAD USER CHATS ----------------
-async function loadUserChats(){
-  if(!currentUser) return;
-  const userRef=doc(db,"users",currentUser.uid);
-  const snap=await getDoc(userRef);
-  if(snap.exists() && snap.data().chats){
-    chats=snap.data().chats.map(c=>({id:c.chatId,messages:c.messages}));
-    if(chats.length>0) currentChat=chats[chats.length-1];
-    renderHistory();
-    loadChat(currentChat.id);
-  } else newChat();
-}
-
-// ---------------- IMAGE GENERATION ----------------
+// ------------------- IMAGE -------------------
 async function generateImage(){
-  if(!currentUser){alert("Please login first");return;}
-  const prompt = prompt("Enter image description:");
-  if(!prompt) return;
-
+  if(!currentUser){alert("Please login");return;}
+  const prompt=window.prompt("Enter image description:");
+  if(!prompt)return;
   try{
-    const res = await fetch("/api/image",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({prompt,userId:currentUser.uid})
-    });
-    const data = await res.json();
-    if(data.url){
-      const img=document.createElement("img");
-      img.src=data.url;
-      img.className="generated-image";
-      imageDiv.appendChild(img);
-
-      const imgRef = doc(db,"users",currentUser.uid);
-      await updateDoc(imgRef,{
-        images: arrayUnion({prompt,url:data.url,date:new Date()})
-      });
-    }
-  }catch(err){
-    alert("Error generating image");
-    console.error(err);
-  }
+    const res=await fetch("/api/image",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt,userId:currentUser.uid})});
+    const data=await res.json();
+    if(data.url){const img=document.createElement("img");img.src=data.url;img.className="generated-image";imageDiv.appendChild(img);}
+  }catch(err){console.error(err);alert("Error generating image");}
 }
-
 newChat();
 </script>
 </body>
-</html>  
-  
+</html>
