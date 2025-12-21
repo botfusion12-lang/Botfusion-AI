@@ -1,245 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>BotFusion AI</title>
+  <meta charset="UTF-8" />
+  <title>BotFusion AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<!-- Icons -->
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
-<style>
-:root{
-  --bg:#1e1f22;
-  --panel:#2a2b2f;
-  --panel-2:#202123;
-  --text:#e6e6e6;
-  --muted:#9aa0a6;
-  --accent:#19c37d;
-  --border:#303134;
-}
-
-*{box-sizing:border-box}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
-}
-
-/* Layout */
-.app{
-  display:flex;
-  height:100vh;
-  overflow:hidden;
-}
-
-/* Sidebar */
-.sidebar{
-  width:280px;
-  background:var(--panel-2);
-  border-right:1px solid var(--border);
-  display:flex;
-  flex-direction:column;
-}
-.sidebar-header{
-  padding:14px;
-}
-.new-chat{
-  width:100%;
-  padding:12px;
-  border-radius:10px;
-  background:var(--panel);
-  border:1px solid var(--border);
-  color:var(--text);
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.history{
-  flex:1;
-  padding:10px;
-  overflow-y:auto;
-}
-.history h4{
-  font-size:12px;
-  color:var(--muted);
-  margin:12px 8px;
-}
-.history-item{
-  padding:10px;
-  border-radius:8px;
-  cursor:pointer;
-}
-.history-item:hover{background:#2f3035}
-
-/* Sidebar Footer */
-.sidebar-footer{
-  padding:10px;
-  border-top:1px solid var(--border);
-}
-.footer-btn{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:10px;
-  border-radius:8px;
-  cursor:pointer;
-}
-.footer-btn:hover{background:#2f3035}
-
-/* Main */
-.main{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-}
-
-/* Top bar */
-.topbar{
-  height:56px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 16px;
-  border-bottom:1px solid var(--border);
-}
-.brand{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.brand img{
-  width:26px;
-  height:26px;
-}
-.actions{
-  display:flex;
-  gap:10px;
-}
-.icon-btn{
-  background:none;
-  border:none;
-  color:var(--text);
-  cursor:pointer;
-}
-
-/* Chat Area */
-.chat{
-  flex:1;
-  padding:20px;
-  overflow-y:auto;
-}
-.center{
-  text-align:center;
-  margin-top:60px;
-}
-.prompt{
-  background:var(--panel);
-  border-radius:12px;
-  padding:14px;
-  margin:12px auto;
-  max-width:500px;
-  text-align:left;
-}
-
-/* Input */
-.input-area{
-  padding:12px;
-  border-top:1px solid var(--border);
-}
-.input-box{
-  background:var(--panel);
-  border-radius:14px;
-  padding:10px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.input-box input{
-  flex:1;
-  background:none;
-  border:none;
-  color:var(--text);
-  outline:none;
-}
-.send{
-  background:var(--accent);
-  border:none;
-  border-radius:50%;
-  width:36px;
-  height:36px;
-  cursor:pointer;
-}
-
-/* Modal */
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
-.modal-content{
-  background:var(--panel);
-  width:90%;
-  max-width:400px;
-  border-radius:14px;
-  padding:20px;
-}
-.modal h3{margin-top:0}
-.modal button{
-  width:100%;
-  margin-top:10px;
-  padding:10px;
-  background:var(--accent);
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-}
-</style>
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-<div class="app">
+<!-- ================= HEADER ================= -->
+<header class="top-bar">
+  <button id="menuBtn"><i class="fas fa-bars"></i></button>
+  <div class="app-title">
+    <img src="assets/logo.svg" alt="BotFusion" class="logo" />
+    <span>BotFusion AI</span>
+  </div>
+  <button id="profileBtn"><i class="fas fa-user-circle"></i></button>
+</header>
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <button class="new-chat" onclick="newChat()">
-        <span class="material-icons">edit</span> New chat
-      </button>
-    </div>
+<!-- ================= SIDEBAR ================= -->
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-top">
+    <button class="new-chat-btn">
+      <i class="fas fa-plus"></i> New Chat
+    </button>
+  </div>
 
-    <div class="history">
-      <h4>TODAY</h4>
-      <div class="history-item">Explain quantum computing</div>
-      <h4>PREVIOUS 7 DAYS</h4>
-    </div>
+  <div class="chat-history">
+    <h4>History</h4>
+    <ul id="historyList">
+      <li class="active">Chat 1</li>
+      <li>Chat 2</li>
+    </ul>
+  </div>
 
-    <div class="sidebar-footer">
-      <div class="footer-btn" onclick="openSettings()">
-        <span class="material-icons">settings</span> Settings
-      </div>
-      <div class="footer-btn" onclick="openProfile()">
-        <span class="material-icons">account_circle</span> Account
-      </div>
+  <div class="sidebar-bottom">
+    <button id="imageTab"><i class="fas fa-image"></i> Image</button>
+    <button id="settingsBtn"><i class="fas fa-cog"></i> Settings</button>
+  </div>
+</aside>
+
+<!-- ================= OVERLAY ================= -->
+<div id="overlay"></div>
+
+<!-- ================= MAIN CHAT ================= -->
+<main class="chat-area">
+
+  <!-- CHAT MESSAGES -->
+  <div id="messages" class="messages">
+    <div class="msg bot">
+      <img src="assets/bot.png" />
+      <p>Hello 👋 I’m <b>BotFusion AI</b>. How can I help you?</p>
     </div>
   </div>
 
-  <!-- Main -->
-  <div class="main">
-    <div class="topbar">
-      <div class="brand">
-        <img src="logo.svg" alt="logo">
-        <strong>BotFusion</strong>
-      </div>
-      <div class="actions">
-        <select id="languageSelect">
-          <option value="auto">🌐 Auto</option>
-          <option value="af">Afrikaans</option>
+  <!-- INPUT BAR -->
+  <div class="input-bar">
+    <button class="icon-btn"><i class="fas fa-paperclip"></i></button>
+    <input type="text" placeholder="Ask BotFusion..." />
+    <button class="send-btn"><i class="fas fa-paper-plane"></i></button>
+  </div>
+
+</main>
+
+<!-- ================= IMAGE GENERATION PANEL ================= -->
+<section id="imagePanel" class="panel hidden">
+  <h2>Image Generation</h2>
+  <input type="text" placeholder="Describe the image..." />
+  <button>Generate</button>
+
+  <div class="image-grid">
+    <!-- images will appear here -->
+  </div>
+</section>
+
+<!-- ================= SETTINGS PANEL ================= -->
+<section id="settingsPanel" class="panel hidden">
+  <h2>Settings</h2>
+
+  <div class="setting-item">
+    <label>Language</label>
+    <select>
+      <option>Auto Detect</option>
+      <option value="af">Afrikaans</option>
 <option value="sq">Albanian</option>
 <option value="am">Amharic</option>
 <option value="ar">Arabic</option>
@@ -341,70 +190,27 @@ body{
 <option value="yi">Yiddish</option>
 <option value="yo">Yoruba</option>
 <option value="zu">Zulu</option>
-        </select>
-        <button class="icon-btn" onclick="startVoice()">
-          <span class="material-icons">mic</span>
-        </button>
-      </div>
-    </div>
-
-    <div class="chat">
-      <div class="center">
-        <img src="logo.svg" width="60"><br><br>
-        <h2>How can I help you today?</h2>
-        <div class="prompt">Explain quantum computing in simple terms</div>
-        <div class="prompt">Write a creative story about a robot</div>
-        <div class="prompt">Help me debug my code</div>
-      </div>
-    </div>
-
-    <div class="input-area">
-      <div class="input-box">
-        <span class="material-icons">attach_file</span>
-        <input type="text" placeholder="Message BotFusion...">
-        <button class="send">
-          <span class="material-icons">arrow_upward</span>
-        </button>
-      </div>
-    </div>
+    </select>
   </div>
-</div>
 
-<!-- Profile Modal -->
-<div class="modal" id="profileModal">
-  <div class="modal-content">
-    <h3>Account</h3>
-    <p>User: Guest</p>
-    <button onclick="closeModal('profileModal')">Close</button>
+  <div class="setting-item">
+    <label>Voice Response</label>
+    <input type="checkbox" />
   </div>
-</div>
+</section>
 
-<!-- Settings Modal -->
-<div class="modal" id="settingsModal">
-  <div class="modal-content">
-    <h3>Settings</h3>
-    <p>Theme: Dark</p>
-    <button onclick="closeModal('settingsModal')">Close</button>
+<!-- ================= PROFILE PANEL ================= -->
+<section id="profilePanel" class="panel hidden">
+  <h2>Account</h2>
+  <div class="profile-card">
+    <img src="assets/user.png" />
+    <p><b>Guest User</b></p>
+    <button>Login / Sign Up</button>
   </div>
-</div>
+</section>
 
-<script>
-function openProfile(){
-  document.getElementById("profileModal").style.display="flex";
-}
-function openSettings(){
-  document.getElementById("settingsModal").style.display="flex";
-}
-function closeModal(id){
-  document.getElementById(id).style.display="none";
-}
-function newChat(){
-  alert("New chat started");
-}
-function startVoice(){
-  alert("Voice input started (browser supported)");
-}
-</script>
+<!-- ================= JS ================= -->
+<script src="app.js"></script>
 
 </body>
-</html>
+  </html>
