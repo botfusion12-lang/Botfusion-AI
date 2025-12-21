@@ -1,12 +1,11 @@
 {
   "name": "BotFusion AI",
   "short_name": "BotFusion",
-  "description": "BotFusion AI – Chat, Images, Voice, and Multilingual Assistant",
-  "start_url": "/docs/index.html",
+  "description": "Your intelligent AI assistant",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0f1115",
-  "theme_color": "#0f1115",
-  "orientation": "portrait",
+  "background_color": "#0f0f0f",
+  "theme_color": "#0f0f0f",
   "icons": [
     {
       "src": "icons/icon-192.png",
