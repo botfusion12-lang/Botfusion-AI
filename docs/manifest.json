@@ -1,7 +1,6 @@
 {
   "name": "BotFusion AI",
   "short_name": "BotFusion",
-  "description": "Your intelligent AI assistant",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f0f0f",
