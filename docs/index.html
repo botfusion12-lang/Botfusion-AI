@@ -25,7 +25,34 @@ body{
   padding:0 14px;
   gap:10px;
 }
+.panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 92%;
+  height: 100%;
+  background: #111;
+  color: #fff;
+  padding: 16px;
+  transform: translateX(100%);
+  transition: 0.25s ease;
+  z-index: 50;
+  overflow-y: auto;
+}
 
+.panel.show {
+  transform: translateX(0);
+}
+
+.hidden {
+  display: none;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+}
 .menu-btn{
   font-size:26px;
   cursor:pointer;
