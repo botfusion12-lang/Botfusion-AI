@@ -1,162 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BotFusion AI</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BotFusion AI</title>
 
-<style>
-/* ————— BASIC RESET ————— */
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,Arial}
+  <!-- App look like real mobile app -->
+  <style>
+    *{box-sizing:border-box;font-family:Arial, Helvetica, sans-serif;}
 
-/* APP CONTAINER */
-.app{
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-}
+    body{
+      margin:0;
+      background:#0f172a;
+      color:white;
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
 
-/* HEADER */
-.header{
-  height:56px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 14px;
-  border-bottom:1px solid #e6e6e6;
-}
+    /* HEADER */
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:12px 16px;
+      background:#14b8a6;
+    }
 
-.icon-btn{
-  background:none;
-  border:none;
-  font-size:22px;
-  cursor:pointer;
-}
+    .topbar h1{
+      margin:0;
+      font-size:18px;
+      font-weight:700;
+    }
 
-/* SIDEBAR */
-.sidebar{
-  position:fixed;
-  top:0;
-  left:-260px;
-  width:260px;
-  height:100%;
-  background:#ffffff;
-  border-right:1px solid #eee;
-  transition:0.25s ease;
-  padding:16px;
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-  z-index:5;
-}
+    .icon{
+      font-size:24px;
+      cursor:pointer;
+    }
 
-.sidebar.open{left:0}
+    /* SIDE MENU */
+    .menu{
+      position:fixed;
+      top:0;
+      left:-260px;
+      width:260px;
+      height:100%;
+      background:#020617;
+      padding:20px;
+      transition:0.25s;
+      z-index:20;
+    }
 
-.sidebar button{
-  text-align:left;
-  border:none;
-  background:#f7f7f7;
-  padding:10px 12px;
-  border-radius:8px;
-  cursor:pointer;
-}
+    .menu.show{ left:0; }
 
-/* MAIN CHAT */
-.main{
-  flex:1;
-  padding:14px;
-  overflow-y:auto;
-}
+    .menu a{
+      display:block;
+      padding:12px 10px;
+      border-radius:10px;
+      color:white;
+      text-decoration:none;
+      margin-bottom:10px;
+      background:#111827;
+    }
 
-/* PANEL MODALS */
-.panel{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  height:70%;
-  background:white;
-  border-top-left-radius:16px;
-  border-top-right-radius:16px;
-  box-shadow:0 -8px 30px rgba(0,0,0,.15);
-  transform:translateY(110%);
-  transition:0.25s;
-  padding:18px;
-  z-index:10;
-}
+    /* MAIN */
+    .content{
+      flex:1;
+      overflow-y:auto;
+      padding:18px;
+    }
 
-.panel.open{
-  transform:translateY(0);
-}
+    .chip{
+      padding:14px;
+      margin:10px 0;
+      background:#111827;
+      border-radius:14px;
+      cursor:pointer;
+    }
 
-.panel h2{
-  margin-bottom:12px;
-}
+    /* INPUT BAR */
+    .inputbar{
+      display:flex;
+      gap:8px;
+      padding:10px;
+      background:#020617;
+    }
 
-/* BACKDROP */
-.backdrop{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.25);
-  opacity:0;
-  pointer-events:none;
-  transition:.25s;
-}
+    .inputbar input{
+      flex:1;
+      padding:12px;
+      border-radius:20px;
+      border:none;
+      outline:none;
+    }
 
-.backdrop.show{
-  opacity:1;
-  pointer-events:auto;
-}
-</style>
-
+    .send{
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      background:#4f8cff;
+      border:none;
+      color:white;
+      font-size:18px;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="app">
-
-  <div class="header">
-    <button id="menuBtn" class="icon-btn">☰</button>
-    <strong>BotFusion AI</strong>
-    <button id="profileBtn" class="icon-btn">👤</button>
+  <!-- SIDE MENU -->
+  <div id="menu" class="menu">
+    <a href="#">Profile</a>
+    <a href="#">Settings</a>
+    <a href="#">Saved chats</a>
+    <a href="#">Help</a>
   </div>
 
-  <div id="sidebar" class="sidebar">
-    <button id="settingsBtn">⚙️ Settings</button>
-    <button id="accountBtn">📧 Accounts</button>
-    <button id="savedBtn">⭐ Saved</button>
+  <!-- HEADER -->
+  <div class="topbar">
+    <span class="icon" id="openMenu">☰</span>
+    <h1>BotFusion AI</h1>
+    <span class="icon" id="profileBtn">👤</span>
   </div>
 
-  <div class="main">
-    Chat here…
+  <!-- MAIN -->
+  <div class="content">
+    <h2>How can I help you today?</h2>
+
+    <div class="chip">Summarize text</div>
+    <div class="chip">Create an image</div>
+    <div class="chip">Analyze something</div>
+    <div class="chip">Make a list</div>
+
+    <p style="margin-top:28px;color:#9ca3af;">
+      BotFusion can make mistakes. Check important info.
+    </p>
   </div>
 
-</div>
+  <!-- INPUT -->
+  <div class="inputbar">
+    <input placeholder="Message BotFusion…" />
+    <button class="send">↑</button>
+  </div>
 
-<div class="backdrop" id="backdrop"></div>
-
-<!-- PANELS -->
-<div id="profilePanel" class="panel">
-  <h2>Profile</h2>
-  <p>Google login, image, name, etc.</p>
-</div>
-
-<div id="settingsPanel" class="panel">
-  <h2>Settings</h2>
-  <p>Theme, language, preferences…</p>
-</div>
-
-<div id="accountPanel" class="panel">
-  <h2>Accounts</h2>
-  <p>Link Google account here later.</p>
-</div>
-
-<div id="savedPanel" class="panel">
-  <h2>Saved</h2>
-  <p>Saved chats & prompts.</p>
-</div>
-
-<script src="app.js"></script>
-
+  <script src="./app.js"></script>
 </body>
 </html>
