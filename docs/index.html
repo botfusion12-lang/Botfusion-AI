@@ -1,262 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BotFusion</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BotFusion AI</title>
 
-  <!-- Remix Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+/* ————— BASIC RESET ————— */
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,Arial}
 
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, Arial, sans-serif;
-      background: #0d0d0d;
-      color: #fff;
-    }
+/* APP CONTAINER */
+.app{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+}
 
-    /* TOP HEADER */
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 16px;
-      background: #1dbf73;
-      font-weight: 600;
-      font-size: 18px;
-    }
+/* HEADER */
+.header{
+  height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 14px;
+  border-bottom:1px solid #e6e6e6;
+}
 
-    .header button {
-      background: none;
-      border: none;
-      font-size: 22px;
-      color: #fff;
-    }
+.icon-btn{
+  background:none;
+  border:none;
+  font-size:22px;
+  cursor:pointer;
+}
 
-    /* SIDE MENU */
-    .drawer {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 75%;
-      height: 100%;
-      background: #121212;
-      padding: 18px;
-      transform: translateX(-100%);
-      transition: .25s;
-      z-index: 100;
-    }
+/* SIDEBAR */
+.sidebar{
+  position:fixed;
+  top:0;
+  left:-260px;
+  width:260px;
+  height:100%;
+  background:#ffffff;
+  border-right:1px solid #eee;
+  transition:0.25s ease;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  z-index:5;
+}
 
-    .drawer.show {
-      transform: translateX(0);
-    }
+.sidebar.open{left:0}
 
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.6);
-      display: none;
-      z-index: 90;
-    }
+.sidebar button{
+  text-align:left;
+  border:none;
+  background:#f7f7f7;
+  padding:10px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
 
-    .overlay.show {
-      display: block;
-    }
+/* MAIN CHAT */
+.main{
+  flex:1;
+  padding:14px;
+  overflow-y:auto;
+}
 
-    .menu-item {
-      padding: 14px 0;
-      border-bottom: 1px solid #2b2b2b;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-    }
+/* PANEL MODALS */
+.panel{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:70%;
+  background:white;
+  border-top-left-radius:16px;
+  border-top-right-radius:16px;
+  box-shadow:0 -8px 30px rgba(0,0,0,.15);
+  transform:translateY(110%);
+  transition:0.25s;
+  padding:18px;
+  z-index:10;
+}
 
-    /* MAIN CONTENT */
-    .main {
-      padding: 16px;
-      text-align: center;
-    }
+.panel.open{
+  transform:translateY(0);
+}
 
-    .suggestion {
-      background: #1b1b1b;
-      padding: 14px;
-      border-radius: 10px;
-      margin: 10px 0;
-    }
+.panel h2{
+  margin-bottom:12px;
+}
 
-    /* FOOTER CHAT INPUT */
-    .chat-box {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      padding: 10px;
-      background: #0d0d0d;
-      display: flex;
-      gap: 10px;
-    }
+/* BACKDROP */
+.backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.25);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+}
 
-    .chat-box input {
-      flex: 1;
-      padding: 12px;
-      border-radius: 20px;
-      border: none;
-      outline: none;
-      background: #1c1c1c;
-      color: white;
-    }
+.backdrop.show{
+  opacity:1;
+  pointer-events:auto;
+}
+</style>
 
-    .chat-box button {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      border: none;
-      background: #5c8dff;
-      color: white;
-      font-size: 18px;
-    }
-
-    /* SLIDE PANELS (Profile / Settings / History) */
-    .panel {
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: 92%;
-      height: 100%;
-      background: #111;
-      padding: 16px;
-      transform: translateX(100%);
-      transition: .25s;
-      z-index: 120;
-      overflow-y: auto;
-    }
-
-    .panel.show {
-      transform: translateX(0);
-    }
-
-    .close-panel {
-      font-size: 22px;
-      background: none;
-      border: none;
-      color: #fff;
-      margin-bottom: 10px;
-    }
-  </style>
 </head>
 
 <body>
 
-  <!-- HEADER -->
+<div class="app">
+
   <div class="header">
-    <button id="btnMenu"><i class="ri-menu-line"></i></button>
-    BotFusion
+    <button id="menuBtn" class="icon-btn">☰</button>
+    <strong>BotFusion AI</strong>
+    <button id="profileBtn" class="icon-btn">👤</button>
   </div>
 
-  <!-- OVERLAY -->
-  <div id="overlay" class="overlay"></div>
-
-  <!-- DRAWER (Hamburger Menu) -->
-  <div id="drawer" class="drawer">
-
-    <div class="menu-item" id="btnProfile">
-      <i class="ri-user-line"></i> Profile
-    </div>
-
-    <div class="menu-item" id="btnSettings">
-      <i class="ri-settings-3-line"></i> Settings
-    </div>
-
-    <div class="menu-item" id="btnHistory">
-      <i class="ri-time-line"></i> Chat History
-    </div>
-
+  <div id="sidebar" class="sidebar">
+    <button id="settingsBtn">⚙️ Settings</button>
+    <button id="accountBtn">📧 Accounts</button>
+    <button id="savedBtn">⭐ Saved</button>
   </div>
 
-  <!-- MAIN -->
   <div class="main">
-    <h2>How can I help you today?</h2>
-
-    <div class="suggestion">Explain quantum computing in simple terms</div>
-    <div class="suggestion">Write a creative story about a robot</div>
-    <div class="suggestion">Help me debug my code</div>
-    <div class="suggestion">What’s the best way to learn a new language?</div>
-
-    <p style="margin-top: 20px;color:#999;">
-      BotFusion can make mistakes. Consider checking important information.
-    </p>
+    Chat here…
   </div>
 
-  <!-- BOTTOM CHAT -->
-  <div class="chat-box">
-    <input placeholder="Message BotFusion..." />
-    <button><i class="ri-arrow-up-line"></i></button>
-  </div>
+</div>
 
-  <!-- PANELS -->
-  <div id="profilePanel" class="panel">
-    <button class="close-panel" onclick="closePanels()"><i class="ri-close-line"></i></button>
-    <h2>Profile</h2>
-    <p>Google login coming soon.</p>
-  </div>
+<div class="backdrop" id="backdrop"></div>
 
-  <div id="settingsPanel" class="panel">
-    <button class="close-panel" onclick="closePanels()"><i class="ri-close-line"></i></button>
-    <h2>Settings</h2>
-    <p>Dark mode, language & more coming soon.</p>
-  </div>
+<!-- PANELS -->
+<div id="profilePanel" class="panel">
+  <h2>Profile</h2>
+  <p>Google login, image, name, etc.</p>
+</div>
 
-  <div id="historyPanel" class="panel">
-    <button class="close-panel" onclick="closePanels()"><i class="ri-close-line"></i></button>
-    <h2>Chat history</h2>
-    <p>Saved chats will appear here.</p>
-  </div>
+<div id="settingsPanel" class="panel">
+  <h2>Settings</h2>
+  <p>Theme, language, preferences…</p>
+</div>
 
+<div id="accountPanel" class="panel">
+  <h2>Accounts</h2>
+  <p>Link Google account here later.</p>
+</div>
 
-  <script>
-    const drawer = document.getElementById("drawer");
-    const overlay = document.getElementById("overlay");
+<div id="savedPanel" class="panel">
+  <h2>Saved</h2>
+  <p>Saved chats & prompts.</p>
+</div>
 
-    // OPEN MENU
-    document.getElementById("btnMenu").addEventListener("click", () => {
-      drawer.classList.add("show");
-      overlay.classList.add("show");
-    });
-
-    // CLOSE WHEN CLICK OUTSIDE
-    overlay.addEventListener("click", () => {
-      drawer.classList.remove("show");
-      overlay.classList.remove("show");
-    });
-
-    /* PANELS */
-    function closePanels() {
-      document.querySelectorAll(".panel").forEach(p => p.classList.remove("show"));
-    }
-
-    document.getElementById("btnProfile").addEventListener("click", () => {
-      closePanels();
-      drawer.classList.remove("show");
-      overlay.classList.remove("show");
-      document.getElementById("profilePanel").classList.add("show");
-    });
-
-    document.getElementById("btnSettings").addEventListener("click", () => {
-      closePanels();
-      drawer.classList.remove("show");
-      overlay.classList.remove("show");
-      document.getElementById("settingsPanel").classList.add("show");
-    });
-
-    document.getElementById("btnHistory").addEventListener("click", () => {
-      closePanels();
-      drawer.classList.remove("show");
-      overlay.classList.remove("show");
-      document.getElementById("historyPanel").classList.add("show");
-    });
-  </script>
+<script src="app.js"></script>
 
 </body>
 </html>
