@@ -1,12 +1,25 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const OpenAI = require("openai");
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-// Example POST chat endpoint
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
   const { message } = req.body;
-  // Connect to OpenAI API
-  const reply = `You asked: ${message}`; // replace with AI call
-  res.json({ reply });
+
+  if (!message) return res.status(400).json({ reply: "No message provided." });
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: message }],
+    });
+
+    const reply = response.choices[0].message.content;
+    res.json({ reply });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ reply: "Error: Unable to process request." });
+  }
 });
 
-module.exports = router;
+module.exports = router;;
