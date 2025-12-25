@@ -3,216 +3,230 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BotFusion AI</title>
-
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0f0f0f">
+<title>BotFusion — v1</title>
 
 <style>
-/* ======== BASIC STYLES ======== */
-*{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;}
-body{margin:0;background:#0f0f0f;color:#fff;}
+body{
+  margin:0;
+  font-family:system-ui, Arial;
+  background:#0f1220;
+  color:#e9ecf5;
+}
 
-/* HEADER */
-header{display:flex;align-items:center;gap:10px;background:#1a1a1a;padding:14px 16px;position:sticky;top:0;}
-header h1{margin:0;font-size:18px;font-weight:700;}
-.menu-btn{font-size:22px;cursor:pointer;}
+header{
+  background:#151a2f;
+  padding:10px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid #1f2546;
+}
 
-/* SIDEBAR */
-.sidebar{position:fixed;top:0;left:-260px;height:100%;width:260px;background:#121212;
-  box-shadow:4px 0 10px rgba(0,0,0,.4);padding:18px;transition:.25s;z-index:100;}
-.sidebar.open{left:0;}
-.sidebar button,.sidebar a{display:block;width:100%;margin:8px 0;padding:10px 11px;
-  border:0;border-radius:8px;background:#222;color:#fff;text-align:left;cursor:pointer;}
-.close-sidebar{background:#333;}
+header h1{font-size:16px;margin:0}
 
-/* MAIN CHAT */
-.chat-container{height:calc(100vh - 160px);overflow-y:auto;padding:14px;}
-.message{max-width:90%;margin:8px 0;padding:12px 14px;border-radius:12px;line-height:1.45;}
-.user{background:#1d4ed8;margin-left:auto;}
-.bot{background:#262626;color:#e6e6e6;}
+button{
+  cursor:pointer;
+  border:none;
+  border-radius:6px;
+  padding:8px 12px;
+}
 
-/* ACTION BUTTONS */
-.actions{display:flex;gap:8px;overflow-x:auto;padding:10px 12px;}
-.actions button{padding:9px 12px;border-radius:20px;border:0;background:#1f1f1f;color:#fff;
-  white-space:nowrap;font-size:13px;cursor:pointer;}
+#googleBtn{
+  background:#fff;
+  color:#000;
+}
 
-/* INPUT */
-.input-bar{display:flex;gap:8px;padding:10px 12px;background:#111;position:sticky;bottom:0;}
-input{flex:1;padding:12px 14px;border-radius:20px;border:1px solid #333;background:#0d0d0d;color:#fff;}
-.send{padding:10px 14px;border-radius:50%;border:0;background:#16a34a;color:#fff;cursor:pointer;}
+#logoutBtn{
+  background:#303a6b;
+  color:#fff;
+  display:none;
+}
 
-/* TYPING */
-.typing{display:none;margin:8px 0 10px 6px;}
-.dot{height:7px;width:7px;background:#aaa;border-radius:50%;display:inline-block;margin-right:3px;
-  animation:bounce 1s infinite;}
-.dot:nth-child(2){animation-delay:.2s;}
-.dot:nth-child(3){animation-delay:.4s;}
-@keyframes bounce{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.container{
+  display:flex;
+  height:calc(100vh - 56px);
+}
 
-/* PANELS (Profile / Settings / About) */
-.section{padding-bottom:20px;}
-.panel{padding:16px;}
-.card{background:#181818;padding:14px 14px 16px;border-radius:12px;margin:12px 0;}
-.label{opacity:.8;font-size:13px;margin-bottom:4px;}
-.google-btn{width:100%;padding:12px;border-radius:8px;border:0;background:#fff;color:#000;font-weight:600;cursor:pointer;margin-top:14px;}
-select{width:100%;padding:10px;border-radius:8px;background:#0f0f0f;color:#fff;border:1px solid #333;margin-top:6px;}
+.sidebar{
+  width:250px;
+  background:#11152a;
+  border-right:1px solid #1f2546;
+  padding:10px;
+}
+
+.sidebar h3{margin-top:10px;font-size:14px;color:#9ea7d9}
+
+.chat-area{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+
+.messages{
+  flex:1;
+  padding:16px;
+  overflow-y:auto;
+}
+
+.message{
+  margin-bottom:10px;
+  padding:10px;
+  border-radius:10px;
+  max-width:80%;
+}
+
+.me{background:#2f3570;margin-left:auto}
+.bot{background:#1d2347}
+
+.typing{
+  display:none;
+  margin:0 0 14px 0;
+  color:#9ea7d9;
+  font-size:13px;
+}
+
+.input-row{
+  padding:10px;
+  border-top:1px solid #1f2546;
+  display:flex;
+  gap:10px;
+}
+
+.input-row input{
+  flex:1;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #2c3361;
+  background:#0f1220;
+  color:#fff;
+}
+
+.input-row input:focus{outline:none;border-color:#5865f2}
+
+.send-btn{
+  background:#5865f2;
+  color:#fff;
+}
 </style>
 </head>
 
 <body>
 
 <header>
-  <span class="menu-btn" onclick="toggleMenu()">☰</span>
-  <h1>BotFusion AI</h1>
+  <h1>BotFusion — v1</h1>
+
+  <div>
+    <button id="googleBtn">Sign in with Google</button>
+    <button id="logoutBtn">Logout</button>
+  </div>
 </header>
 
-<!-- SIDEBAR -->
-<div id="sidebar" class="sidebar">
-  <button class="close-sidebar" onclick="toggleMenu()">Close ✕</button>
-
-  <a onclick="showSection('chat')">🏠 Home</a>
-  <a onclick="showSection('profile')">👤 My Profile</a>
-  <a onclick="showSection('settings')">⚙️ Settings</a>
-  <a onclick="showSection('about')">ℹ️ About</a>
-</div>
-
-<!-- MAIN CHAT -->
-<div id="chat" class="section">
-  <div class="actions">
-    <button onclick="quick('Summarize this')">Summarize</button>
-    <button onclick="quick('Create an image of')">Create Image</button>
-    <button onclick="quick('Analyze this text')">Analyze</button>
-    <button onclick="quick('Make a list of')">Make list</button>
+<div class="container">
+  <div class="sidebar">
+    <h3>About</h3>
+    <p style="font-size:13px;color:#c9cee9">
+      BotFusion v1 — personal AI assistant.<br><br>
+      License: MIT<br>
+      Version: 1.0.0<br>
+      Built with Firebase Auth + Web.
+    </p>
   </div>
 
-  <div class="chat-container" id="messages"></div>
+  <div class="chat-area">
+    <div class="messages" id="messages"></div>
 
-  <div class="typing" id="typing">
-    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-  </div>
+    <div class="typing" id="typingIndicator">
+      Bot is typing…
+    </div>
 
-  <div class="input-bar">
-    <input id="userInput" placeholder="Message BotFusion..." />
-    <button class="send" onclick="send()">↑</button>
+    <div class="input-row">
+      <input id="userInput" placeholder="Type a message..." />
+      <button class="send-btn" id="sendBtn">Send</button>
+    </div>
   </div>
 </div>
 
-<!-- PROFILE -->
-<div id="profile" class="section panel" style="display:none;">
-  <h2>My Profile</h2>
-  <div class="card">
-    <div class="label">Name</div>
-    <div id="pName">Guest</div>
-
-    <div class="label" style="margin-top:10px;">Email</div>
-    <div id="pEmail">Not logged in</div>
-
-    <button class="google-btn" onclick="fakeLogin()">Continue with Google</button>
-  </div>
-</div>
-
-<!-- SETTINGS -->
-<div id="settings" class="section panel" style="display:none;">
-  <h2>Settings</h2>
-  <div class="card">
-    <div class="label">Language</div>
-    <select>
-      <option>English</option>
-      <option>Hindi</option>
-      <option>Marathi</option>
-    </select>
-
-    <div class="label" style="margin-top:10px;">Theme</div>
-    <select>
-      <option>Dark</option>
-      <option>Light</option>
-    </select>
-  </div>
-</div>
-
-<!-- ABOUT -->
-<div id="about" class="section panel" style="display:none;">
-  <h2>About BotFusion AI</h2>
-  <div class="card">
-    <p><strong>Version:</strong> 1.0.0</p>
-    <p><strong>Developer:</strong> Atharv Pawar</p>
-    <p><strong>Description:</strong> BotFusion AI is a smart AI assistant that can chat, summarize text, analyze content, generate images, and perform multiple AI tasks across 100+ languages.</p>
-    <p><strong>License:</strong> MIT License</p>
-    <p><strong>Features:</strong></p>
-    <ul>
-      <li>AI Chat in multiple languages</li>
-      <li>Image generation from prompts</li>
-      <li>Summarize, analyze, and make lists</li>
-      <li>Google login & profile management</li>
-      <li>Save chat history</li>
-      <li>PWA support: offline usage</li>
-      <li>Dark mode & light mode</li>
-      <li>Typing indicator & quick prompt buttons</li>
-      <li>Code generation & assistance</li>
-    </ul>
-    <p><strong>Contact:</strong> <a href="mailto:support@botfusion.ai" style="color:#16a34a;">support@botfusion.ai</a></p>
-    <p>© 2025 BotFusion AI. All rights reserved.</p>
-  </div>
-</div>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
 <script>
-/* ======== JS FUNCTIONS ======== */
-function toggleMenu(){
-  document.getElementById("sidebar").classList.toggle("open");
-}
+// TODO: REPLACE WITH YOUR FIREBASE CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyDA62eN5MEjX9Z-gw6w9UuR8L-Ke_6J7eE",
+  authDomain: "botfusion-ai-bd6d0.firebaseapp.com",
+  projectId: "botfusion-ai-bd6d0",
+  storageBucket: "botfusion-ai-bd6d0.firebasestorage.app",
+  messagingSenderId: "730477136598",
+  appId: "1:730477136598:web:c6b4e0d495744d12079777"
+};
 
-function showSection(id){
-  document.querySelectorAll(".section").forEach(s=>s.style.display="none");
-  document.getElementById(id).style.display="block";
-  toggleMenu();
-}
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
-/* FAKE GOOGLE LOGIN (UI ONLY) */
-function fakeLogin(){
-  document.getElementById("pName").innerText = "BotFusion User";
-  document.getElementById("pEmail").innerText = "user@gmail.com";
-  alert("Google login simulated (real login later).");
-}
+// GOOGLE PROVIDER
+const provider = new firebase.auth.GoogleAuthProvider();
+provider.setCustomParameters({
+  client_id: "730477136598-2oqsl0hv4srn6rll9e41dfvdruhej9th.apps.googleusercontent.com"
+});
 
-/* QUICK PROMPTS */
-function quick(text){
-  document.getElementById("userInput").value = text + " ";
-}
+// UI ELEMENTS
+const googleBtn = document.getElementById("googleBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const messages = document.getElementById("messages");
+const typingIndicator = document.getElementById("typingIndicator");
+const input = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
 
-/* SEND MESSAGE */
-function send(){
-  const box=document.getElementById("userInput");
-  const msg=box.value.trim();
-  if(!msg) return;
+// AUTH EVENTS
+googleBtn.onclick = async () => {
+  try {
+    await auth.signInWithPopup(provider);
+  } catch (e) { alert(e.message); }
+};
 
-  addMessage(msg,"user");
-  box.value="";
+logoutBtn.onclick = () => auth.signOut();
 
+auth.onAuthStateChanged(user => {
+  if (user) {
+    googleBtn.style.display = "none";
+    logoutBtn.style.display = "inline-block";
+    addMessage("bot","Welcome, " + (user.displayName || "User") + " 👋");
+  } else {
+    googleBtn.style.display = "inline-block";
+    logoutBtn.style.display = "none";
+    addMessage("bot","You are logged out.");
+  }
+});
+
+// CHAT
+sendBtn.onclick = sendMessage;
+input.addEventListener("keydown", e => { if(e.key==="Enter") sendMessage(); });
+
+function sendMessage(){
+  const text = input.value.trim();
+  if(!text) return;
+  addMessage("me", text);
+  input.value = "";
   showTyping(true);
 
+  // fake bot reply
   setTimeout(()=>{
     showTyping(false);
-    addMessage("This is where BotFusion reply will come (backend later).","bot");
-  },1200);
+    addMessage("bot","This is a demo reply for: " + text);
+  }, 1200);
 }
 
-function addMessage(text,type){
-  const container=document.getElementById("messages");
-  const div=document.createElement("div");
-  div.className="message " + (type==="user"?"user":"bot");
-  div.innerText=text;
-  container.appendChild(div);
-  container.scrollTop=container.scrollHeight;
+function addMessage(type, text){
+  const div = document.createElement("div");
+  div.className = "message " + type;
+  div.innerText = text;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
 }
 
-function showTyping(show){
-  document.getElementById("typing").style.display = show ? "block":"none";
-}
-
-/* PWA SERVICE WORKER */
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
+function showTyping(state){
+  typingIndicator.style.display = state ? "block" : "none";
 }
 </script>
 
