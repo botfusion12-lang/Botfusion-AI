@@ -4,10 +4,12 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>BotFusion AI</title>
+
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f0f0f">
 
 <style>
+/* ======== BASIC STYLES ======== */
 *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;}
 body{margin:0;background:#0f0f0f;color:#fff;}
 
@@ -18,9 +20,8 @@ header h1{margin:0;font-size:18px;font-weight:700;}
 
 /* SIDEBAR */
 .sidebar{position:fixed;top:0;left:-260px;height:100%;width:260px;background:#121212;
-  box-shadow:4px 0 10px rgba(0,0,0,.4);padding:18px;transition:.25s;}
+  box-shadow:4px 0 10px rgba(0,0,0,.4);padding:18px;transition:.25s;z-index:100;}
 .sidebar.open{left:0;}
-.sidebar h2{margin:6px 0 14px;font-size:16px;}
 .sidebar button,.sidebar a{display:block;width:100%;margin:8px 0;padding:10px 11px;
   border:0;border-radius:8px;background:#222;color:#fff;text-align:left;cursor:pointer;}
 .close-sidebar{background:#333;}
@@ -34,7 +35,7 @@ header h1{margin:0;font-size:18px;font-weight:700;}
 /* ACTION BUTTONS */
 .actions{display:flex;gap:8px;overflow-x:auto;padding:10px 12px;}
 .actions button{padding:9px 12px;border-radius:20px;border:0;background:#1f1f1f;color:#fff;
-  white-space:nowrap;font-size:13px;}
+  white-space:nowrap;font-size:13px;cursor:pointer;}
 
 /* INPUT */
 .input-bar{display:flex;gap:8px;padding:10px 12px;background:#111;position:sticky;bottom:0;}
@@ -54,10 +55,6 @@ input{flex:1;padding:12px 14px;border-radius:20px;border:1px solid #333;backgrou
 .panel{padding:16px;}
 .card{background:#181818;padding:14px 14px 16px;border-radius:12px;margin:12px 0;}
 .label{opacity:.8;font-size:13px;margin-bottom:4px;}
-
-.profile-line{display:flex;justify-content:space-between;margin:6px 0;}
-.profile-line span{font-size:14px;}
-
 .google-btn{width:100%;padding:12px;border-radius:8px;border:0;background:#fff;color:#000;font-weight:600;cursor:pointer;margin-top:14px;}
 select{width:100%;padding:10px;border-radius:8px;background:#0f0f0f;color:#fff;border:1px solid #333;margin-top:6px;}
 </style>
@@ -80,7 +77,7 @@ select{width:100%;padding:10px;border-radius:8px;background:#0f0f0f;color:#fff;b
   <a onclick="showSection('about')">ℹ️ About</a>
 </div>
 
-<!-- MAIN CONTENT -->
+<!-- MAIN CHAT -->
 <div id="chat" class="section">
   <div class="actions">
     <button onclick="quick('Summarize this')">Summarize</button>
@@ -104,7 +101,6 @@ select{width:100%;padding:10px;border-radius:8px;background:#0f0f0f;color:#fff;b
 <!-- PROFILE -->
 <div id="profile" class="section panel" style="display:none;">
   <h2>My Profile</h2>
-
   <div class="card">
     <div class="label">Name</div>
     <div id="pName">Guest</div>
@@ -112,24 +108,23 @@ select{width:100%;padding:10px;border-radius:8px;background:#0f0f0f;color:#fff;b
     <div class="label" style="margin-top:10px;">Email</div>
     <div id="pEmail">Not logged in</div>
 
-    <button class="google-btn" style="margin-top:14px;" onclick="fakeLogin()">Continue with Google</button>
+    <button class="google-btn" onclick="fakeLogin()">Continue with Google</button>
   </div>
 </div>
 
 <!-- SETTINGS -->
 <div id="settings" class="section panel" style="display:none;">
   <h2>Settings</h2>
-
   <div class="card">
     <div class="label">Language</div>
-    <select style="width:100%;padding:10px;border-radius:6px;background:#0f0f0f;color:#fff;border:1px solid #333;">
+    <select>
       <option>English</option>
       <option>Hindi</option>
       <option>Marathi</option>
     </select>
 
     <div class="label" style="margin-top:10px;">Theme</div>
-    <select style="width:100%;padding:10px;border-radius:6px;background:#0f0f0f;color:#fff;border:1px solid #333;">
+    <select>
       <option>Dark</option>
       <option>Light</option>
     </select>
@@ -138,13 +133,31 @@ select{width:100%;padding:10px;border-radius:8px;background:#0f0f0f;color:#fff;b
 
 <!-- ABOUT -->
 <div id="about" class="section panel" style="display:none;">
-  <h2>About BotFusion</h2>
+  <h2>About BotFusion AI</h2>
   <div class="card">
-    Smart AI assistant — chat, summarize, analyze, create & more.
+    <p><strong>Version:</strong> 1.0.0</p>
+    <p><strong>Developer:</strong> Atharv Pawar</p>
+    <p><strong>Description:</strong> BotFusion AI is a smart AI assistant that can chat, summarize text, analyze content, generate images, and perform multiple AI tasks across 100+ languages.</p>
+    <p><strong>License:</strong> MIT License</p>
+    <p><strong>Features:</strong></p>
+    <ul>
+      <li>AI Chat in multiple languages</li>
+      <li>Image generation from prompts</li>
+      <li>Summarize, analyze, and make lists</li>
+      <li>Google login & profile management</li>
+      <li>Save chat history</li>
+      <li>PWA support: offline usage</li>
+      <li>Dark mode & light mode</li>
+      <li>Typing indicator & quick prompt buttons</li>
+      <li>Code generation & assistance</li>
+    </ul>
+    <p><strong>Contact:</strong> <a href="mailto:support@botfusion.ai" style="color:#16a34a;">support@botfusion.ai</a></p>
+    <p>© 2025 BotFusion AI. All rights reserved.</p>
   </div>
 </div>
 
 <script>
+/* ======== JS FUNCTIONS ======== */
 function toggleMenu(){
   document.getElementById("sidebar").classList.toggle("open");
 }
@@ -195,6 +208,11 @@ function addMessage(text,type){
 
 function showTyping(show){
   document.getElementById("typing").style.display = show ? "block":"none";
+}
+
+/* PWA SERVICE WORKER */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
 }
 </script>
 
