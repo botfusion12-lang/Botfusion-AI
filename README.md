@@ -8,7 +8,7 @@ It is inspired by professional AI tools but built step-by-step for learning, exp
 
 ## 🚀 Live Demo
 
-hhtps://botfusion-ai.github.io
+https://botfusion-ai.github.io/Botfusion-AI 
 ```
 
 ---
