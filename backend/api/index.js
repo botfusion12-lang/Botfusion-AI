@@ -1,16 +1,18 @@
-const express = require('express');
-const cors = require('cors');
-const chatRoute = require('./chat');
-const imageRoute = require('./image');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+require("dotenv").config();
+
+const chatRoute = require("./chat");
+const imageRoute = require("./image");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/chat', chatRoute);
-app.use('/api/image', imageRoute);
+app.use("/api/chat", chatRoute);
+app.use("/api/image", imageRoute);
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log('Server running...');
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`BotFusion backend running on port ${PORT}`);
+});;
