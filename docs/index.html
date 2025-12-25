@@ -10,7 +10,27 @@
 /* Reset and fonts */
 * { margin:0; padding:0; box-sizing:border-box; font-family:Poppins,sans-serif; }
 body { background:#121212; color:#fff; }
+.panel {
+  position: fixed;
+  top: 10%;
+  right: 5%;
+  width: 90%;
+  max-width: 420px;
+  background: #111;
+  color: white;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  z-index: 20;
+}
 
+.hidden {
+  display: none;
+}
+
+.panel h2 {
+  margin-top: 0;
+}
 /* Header */
 header {
   display:flex; justify-content:space-between; align-items:center;
@@ -100,6 +120,8 @@ select { background:#2a2a2a; color:#fff; border:none; border-radius:8px; padding
     <button data-action="create">Create Image</button>
     <button data-action="list">Make List</button>
     <button data-action="code">Coding</button>
+    <button onclick="openProfile()">👤</button>
+    <button onclick="openSettings()">⚙️</button>
   </div>
   <div class="bottom">
     <button data-action="settings">Settings</button>
@@ -232,7 +254,18 @@ async function sendFeature(feature){
     addMessage('bot',data.reply);
   }catch(err){ console.error(err); addMessage('bot','Error connecting backend.'); }
 }
+function openProfile() {
+  document.getElementById("profilePanel").classList.remove("hidden");
+}
 
+function openSettings() {
+  document.getElementById("settingsPanel").classList.remove("hidden");
+}
+
+function closePanel() {
+  document.getElementById("profilePanel").classList.add("hidden");
+  document.getElementById("settingsPanel").classList.add("hidden");
+}
 // Create image
 async function createImage(){
   const prompt=chatInput.value.trim();
