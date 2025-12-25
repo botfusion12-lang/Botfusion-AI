@@ -135,7 +135,34 @@ select { background:#2a2a2a; color:#fff; border:none; border-radius:8px; padding
     <button onclick="closeModal('accountModal')">Close</button>
   </div>
 </div>
+<!-- PROFILE PANEL -->
+<div id="profilePanel" class="panel hidden">
+  <h2>My Profile</h2>
+  <p>Name: Guest</p>
+  <p>Email: Not logged in</p>
 
+  <button onclick="closePanel()">Close</button>
+</div>
+
+<!-- SETTINGS PANEL -->
+<div id="settingsPanel" class="panel hidden">
+  <h2>Settings</h2>
+
+  <label>Language</label>
+  <select>
+    <option>English</option>
+    <option>Hindi</option>
+    <option>Marathi</option>
+  </select>
+
+  <label>Theme</label>
+  <select>
+    <option>Dark</option>
+    <option>Light</option>
+  </select>
+
+  <button onclick="closePanel()">Close</button>
+</div>
 <script>
 const sidebar = document.querySelector('.sidebar');
 const hamburger = document.querySelector('.hamburger');
