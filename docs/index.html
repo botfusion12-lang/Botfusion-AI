@@ -2,228 +2,204 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Botfusion AI</title>
-
-<!-- PWA -->
-<link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#0e1117" />
-
-<!-- Icons -->
-<link rel="icon" type="image/png" href="icons/icon-192.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BotFusion UI</title>
 
 <style>
+/* (same styles as before — unchanged) */
+
 :root{
-  --bg:#0e1117;
-  --panel:#161b22;
+  --bg-dark:#0d0d12;
+  --panel-dark:#14141c;
   --text:#ffffff;
-  --accent:#2f81f7;
+  --text-muted:#a9a9b3;
+  --accent:#10a37f;
+
+  --bg-light:#f7f7f8;
+  --panel-light:#ffffff;
+  --text-light:#1c1c21;
+  --text-muted-light:#6a6a75;
 }
 
 body{
   margin:0;
-  font-family:system-ui, Arial;
-  background:var(--bg);
+  font-family:system-ui,-apple-system,Segoe UI,Arial;
+  background:var(--bg-dark);
   color:var(--text);
   display:flex;
   height:100vh;
 }
 
-/* Sidebar */
 .sidebar{
-  width:60px;
-  background:#0c0f14;
-  padding:10px 6px;
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-  border-right:1px solid #222;
+  width:260px;
+  background:var(--panel-dark);
+  border-right:1px solid #2a2a35;
+  padding:14px;
+  box-sizing:border-box;
+  position:fixed;
+  top:0;
+  bottom:0;
+  left:-270px;
+  transition:0.25s ease;
+  z-index:10;
 }
-.icon{
-  width:42px;
-  height:42px;
-  border-radius:10px;
-  background:#161b22;
+.sidebar.open{ left:0; }
+
+.nav-item{
+  padding:10px 12px;
+  border-radius:8px;
+  margin-bottom:6px;
+  cursor:pointer;
   display:flex;
   align-items:center;
-  justify-content:center;
-  font-size:20px;
-  cursor:pointer;
+  gap:10px;
+  color:var(--text-muted);
 }
-.icon:hover{
-  background:#1f2937;
-}
-
-/* Drawer panel */
-.panel{
-  width:300px;
-  background:var(--panel);
-  border-right:1px solid #1f2937;
-  display:none;
-  flex-direction:column;
-}
-.panel.active{display:flex;}
-.panel-header{
-  padding:16px;
-  font-weight:700;
-  border-bottom:1px solid #222;
-}
-
-/* Main chat area */
-.main{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-}
+.nav-item:hover,
+.nav-item.active{ background:#1f1f29; color:#fff; }
 
 .header{
-  padding:14px 16px;
-  border-bottom:1px solid #1f2937;
+  height:58px;
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  gap:10px;
+  padding:0 14px;
+  border-bottom:1px solid #24242f;
+  background:var(--panel-dark);
+  position:sticky;
+  top:0;
+  z-index:5;
 }
-.badge{
-  background:#1f2937;
-  padding:4px 10px;
-  border-radius:10px;
-  font-size:13px;
-}
-.chat{
-  flex:1;
-  overflow-y:auto;
-  padding:14px;
-}
-.msg{
-  padding:10px 12px;
-  border-radius:10px;
-  margin-bottom:10px;
-  max-width:80%;
-}
-.user{background:#2f81f7;color:#fff;margin-left:auto;}
-.bot{background:#1f2937;}
-.typing{opacity:.7;font-style:italic}
 
-/* Input bar */
-.inputbar{
-  border-top:1px solid #1f2937;
-  padding:10px;
-  display:flex;
-  gap:8px;
-}
-.inputbar input{
-  flex:1;
-  background:#0c0f14;
-  border:1px solid #1f2937;
+.hamburger{ width:32px;height:32px;border-radius:8px;border:1px solid #2f2f3a;
+  display:flex;flex-direction:column;justify-content:center;gap:5px;padding:6px;cursor:pointer;}
+.hamburger span{background:#fff;height:2px;width:100%;}
+
+.main{ flex:1; display:flex; flex-direction:column; }
+.page{ display:none; padding:16px; }
+.page.active{ display:block; }
+
+.chat-window{ flex:1; display:flex; flex-direction:column; }
+.messages{ flex:1; overflow-y:auto; padding:14px; }
+
+.message{ margin-bottom:12px; padding:10px 12px; border-radius:10px; max-width:75%; }
+.user{ background:#1f2937; align-self:flex-end; }
+.bot{ background:#161a23; border:1px solid #262b37; }
+
+.typing{ display:none; margin-bottom:10px; font-size:13px; color:var(--text-muted); }
+
+.input-row{ border-top:1px solid #262631; padding:10px; display:flex; gap:10px; }
+.input-row input{ flex:1; padding:10px 12px;border-radius:10px;border:1px solid #2a2a35;background:#0f0f15;color:#fff;}
+button{ border-radius:10px;border:1px solid #2a2a35;background:#1e1e28;color:#fff;padding:10px 14px;cursor:pointer; }
+
+.settings-group{ margin-bottom:18px; }
+.toggle{ padding:8px 10px;border:1px solid #2a2a35;border-radius:8px;cursor:pointer; }
+
+/* profile box */
+.profile-card{
+  border:1px solid #2a2a35;
   border-radius:10px;
-  padding:10px;
-  color:#fff;
+  padding:14px;
+  max-width:340px;
 }
-.inputbar button{
-  background:#2f81f7;
-  color:white;
-  border:none;
-  border-radius:10px;
-  padding:10px 14px;
+
+.profile-card img{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  margin-bottom:10px;
 }
-.section{padding:14px;border-bottom:1px solid #222;}
-button.small{
-  padding:8px 10px;
-  margin-top:6px;
-  background:#2f81f7;
-  border:none;
-  color:#fff;
-  border-radius:8px;
-}
-.toggle{
-  background:#0c0f14;
-  border:1px solid #1f2937;
-  padding:10px;
-  border-radius:8px;
-}
+
+/* light mode overrides */
+body.light{ background:var(--bg-light); color:var(--text-light); }
+body.light .sidebar{ background:var(--panel-light); border-right:1px solid #ececef; }
+body.light .header{ background:var(--panel-light); border-color:#ececef; }
+body.light .nav-item:hover{ background:#f0f0f2; color:#000;}
+body.light .messages .user{ background:#e8e8ff;}
+body.light .messages .bot{ background:#f4f4f7; border:1px solid #e0e0e4;}
+body.light .input-row input{ background:#fff; color:#000;}
+body.light .toggle{ border-color:#d9d9de; }
 </style>
 </head>
 
 <body>
 
-<!-- LEFT ICON BAR -->
-<div class="sidebar">
-  <div class="icon" onclick="openPanel('profile')">👤</div>
-  <div class="icon" onclick="openPanel('settings')">⚙️</div>
-  <div class="icon" onclick="openPanel('about')">ℹ️</div>
-</div>
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <h2>BotFusion</h2>
 
-<!-- PANELS -->
-<div class="panel" id="profilePanel">
-  <div class="panel-header">Profile</div>
-
-  <div class="section">
-    <div id="userName">Not logged in</div>
-    <button class="small" onclick="googleLogin()">Login with Google</button>
-    <button class="small" onclick="googleLogout()">Logout</button>
-  </div>
-
-</div>
-
-<div class="panel" id="settingsPanel">
-  <div class="panel-header">Settings</div>
-
-  <div class="section">
-    Theme
-    <div class="toggle">
-      <button class="small" onclick="setTheme('dark')">Dark</button>
-      <button class="small" onclick="setTheme('light')">Light</button>
-    </div>
-  </div>
-
-  <div class="section">
-    Language
-    <div class="toggle">
-      <select id="langSelect">
-        <option value="en">English</option>
-        <option value="hi">Hindi</option>
-        <option value="mr">Marathi</option>
-      </select>
-    </div>
-  </div>
-
-</div>
-
-<div class="panel" id="aboutPanel">
-  <div class="panel-header">About</div>
-  <div class="section">
-    Botfusion AI — personal AI assistant.
-    <br><br>
-    • Chat  
-    • Image generation  
-    • Google login  
-    • Offline PWA support  
-    • Multi-language (basic)
-  </div>
+  <div class="nav-item active" data-page="chat">🗨️ New Chat</div>
+  <div class="nav-item" data-page="profile">👤 Profile</div>
+  <div class="nav-item" data-page="settings">⚙️ Settings</div>
+  <div class="nav-item" data-page="about">ℹ️ About</div>
 </div>
 
 <!-- MAIN -->
 <div class="main">
+
   <div class="header">
-    <div>💬 Botfusion AI</div>
-    <div class="badge">Online</div>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    <strong id="pageTitle">New Chat</strong>
   </div>
 
-  <div class="chat" id="chat"></div>
-
-  <div class="inputbar">
-    <input id="msg" placeholder="Ask anything..." />
-    <button onclick="send()">➤</button>
+  <!-- CHAT -->
+  <div class="page active" id="chat">
+    <div class="chat-window">
+      <div class="messages" id="messages"></div>
+      <div class="typing" id="typing">Bot is typing…</div>
+      <div class="input-row">
+        <input id="userInput" placeholder="Type a message..." />
+        <button id="sendBtn">Send</button>
+      </div>
+    </div>
   </div>
+
+  <!-- PROFILE -->
+  <div class="page" id="profile">
+    <h3>Your Profile</h3>
+
+    <div class="profile-card" id="profileCard">
+      <p>You are not logged in.</p>
+      <button id="loginBtn">Sign in with Google</button>
+    </div>
+
+    <button id="logoutBtn" style="display:none;margin-top:10px;">Logout</button>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="page" id="settings">
+    <h3>Settings</h3>
+
+    <div class="settings-group">
+      <strong>Theme</strong>
+      <div class="toggle" id="themeToggle">Switch theme</div>
+    </div>
+
+    <div class="settings-group">
+      <strong>Language</strong>
+      <p>(Languages coming soon)</p>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="page" id="about">
+    <h3>About BotFusion</h3>
+    <p>Simple chat interface inspired by modern AI apps.</p>
+    <p>License: MIT</p>
+  </div>
+
 </div>
 
+<!-- FIREBASE SDK -->
+<script type="module">
+// Firebase SDK
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js"></script>
-
-<script>
-/* 🔥 PASTE YOUR FIREBASE CONFIG HERE */
+// ================================
+// 🔴 REPLACE WITH YOUR OWN CONFIG
+// ================================
 const firebaseConfig = {
   apiKey: "AIzaSyDA62eN5MEjX9Z-gw6w9UuR8L-Ke_6J7eE",
   authDomain: "botfusion-ai-bd6d0.firebaseapp.com",
@@ -233,86 +209,101 @@ const firebaseConfig = {
   appId: "1:730477136598:web:c6b4e0d495744d12079777",
   measurementId: "G-53FTWNQB8X"
 };
+// =================================
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-/* PANELS */
-function openPanel(name){
-  document.getElementById("profilePanel").classList.remove("active");
-  document.getElementById("settingsPanel").classList.remove("active");
-  document.getElementById("aboutPanel").classList.remove("active");
+// UI references
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const profileCard = document.getElementById("profileCard");
 
-  if(name==="profile") document.getElementById("profilePanel").classList.add("active");
-  if(name==="settings") document.getElementById("settingsPanel").classList.add("active");
-  if(name==="about") document.getElementById("aboutPanel").classList.add("active");
-}
-
-/* THEME */
-function setTheme(t){
-  if(t==="light"){
-    document.documentElement.style.setProperty("--bg","#ffffff");
-    document.documentElement.style.setProperty("--text","#111");
-    document.documentElement.style.setProperty("--panel","#f3f3f3");
-  } else {
-    document.documentElement.style.setProperty("--bg","#0e1117");
-    document.documentElement.style.setProperty("--text","#fff");
-    document.documentElement.style.setProperty("--panel","#161b22");
+// Login
+loginBtn.onclick = async () => {
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (e) {
+    alert("Login failed");
+    console.error(e);
   }
-}
+};
 
-/* CHAT (dummy for now) */
-function addMsg(text, who){
-  const box=document.createElement("div");
-  box.className="msg "+who;
-  box.innerText=text;
-  document.getElementById("chat").appendChild(box);
-}
+// Logout
+logoutBtn.onclick = () => signOut(auth);
 
-async function send(){
-  const t=document.getElementById("msg").value.trim();
-  if(!t) return;
-  addMsg(t,"user");
-  document.getElementById("msg").value="";
-
-  const typing=document.createElement("div");
-  typing.className="msg bot typing";
-  typing.innerText="Botfusion is typing…";
-  document.getElementById("chat").appendChild(typing);
-
-  setTimeout(()=>{
-    typing.remove();
-    addMsg("This will connect to backend soon 🚀","bot");
-  },900);
-}
-
-/* GOOGLE AUTH */
-async function googleLogin(){
-  const provider = new firebase.auth.GoogleAuthProvider();
-  try{
-    const result = await auth.signInWithPopup(provider);
-    const user=result.user;
-    document.getElementById("userName").innerText=
-      user.displayName+" ("+user.email+")";
-  }catch(e){ alert(e.message); }
-}
-
-async function googleLogout(){
-  await auth.signOut();
-  document.getElementById("userName").innerText="Not logged in";
-}
-
-auth.onAuthStateChanged(user=>{
-  if(user){
-    document.getElementById("userName").innerText=
-      user.displayName+" ("+user.email+")";
+// Update UI when login state changes
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    profileCard.innerHTML = `
+      <img src="${user.photoURL}">
+      <p><strong>${user.displayName}</strong></p>
+      <p>${user.email}</p>
+    `;
+    logoutBtn.style.display = "inline-block";
+  } else {
+    profileCard.innerHTML = `
+      <p>You are not logged in.</p>
+      <button id="loginBtn">Sign in with Google</button>
+    `;
+    logoutBtn.style.display = "none";
+    document.getElementById("loginBtn").onclick = loginBtn.onclick;
   }
 });
+</script>
 
-/* REGISTER SERVICE WORKER */
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("sw.js");
+<script>
+// sidebar + navigation
+const sidebar = document.getElementById("sidebar");
+const hamburger = document.getElementById("hamburger");
+const pages = document.querySelectorAll(".page");
+const navItems = document.querySelectorAll(".nav-item");
+const pageTitle = document.getElementById("pageTitle");
+
+hamburger.onclick = ()=> sidebar.classList.toggle("open");
+
+navItems.forEach(item=>{
+  item.onclick = ()=>{
+    navItems.forEach(n=>n.classList.remove("active"));
+    item.classList.add("active");
+    pages.forEach(p=>p.classList.remove("active"));
+    document.getElementById(item.dataset.page).classList.add("active");
+    pageTitle.textContent = item.textContent.trim();
+    sidebar.classList.remove("open");
+  };
+});
+
+// chat demo
+const messages=document.getElementById("messages");
+const typing=document.getElementById("typing");
+const input=document.getElementById("userInput");
+const sendBtn=document.getElementById("sendBtn");
+
+function addMessage(text,who){
+  const div=document.createElement("div");
+  div.className="message "+who;
+  div.textContent=text;
+  messages.appendChild(div);
+  messages.scrollTop=messages.scrollHeight;
 }
+
+sendBtn.onclick=()=>{
+  const text=input.value.trim();
+  if(!text) return;
+  addMessage(text,"user");
+  input.value="";
+  typing.style.display="block";
+  setTimeout(()=>{
+    typing.style.display="none";
+    addMessage("Sample reply (backend coming soon).","bot");
+  },1200);
+};
+
+// theme switch
+document.getElementById("themeToggle").onclick = ()=>{
+  document.body.classList.toggle("light");
+};
 </script>
 
 </body>
