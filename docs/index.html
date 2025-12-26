@@ -6,207 +6,193 @@
 <title>BotFusion AI</title>
 
 <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-auth-compat.js"></script>
 
 <style>
-:root {
-  --dark-bg: #1e1e2f;
-  --dark-secondary: #2a2a3d;
-  --dark-text: #e0e0e0;
-  --light-bg: #ffffff;
-  --light-text: #111111;
-}
-
+/* BODY & GENERAL */
 body {
-  margin: 0;
+  background-color: #1e1e2f;
+  color: #e0e0e0;
   font-family: Arial, sans-serif;
-  background: var(--dark-bg);
-  color: var(--dark-text);
-  transition: all 0.3s;
+  margin: 0;
+  padding: 0;
+  transition: all 0.3s ease;
 }
 
+/* HEADER */
 header {
+  background-color: #2a2a3d;
+  color: #ffffff;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 10px 15px;
-  background: var(--dark-secondary);
+  align-items: center;
+  padding: 10px 20px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
-.hamburger {
+#menuBtn {
   font-size: 24px;
   cursor: pointer;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 20px;
+  background: none;
+  border: none;
+  color: #ffffff;
 }
 
 header button {
+  background-color: #505070;
+  color: #ffffff;
+  border: none;
+  padding: 8px 12px;
   margin-left: 10px;
-  padding: 5px 10px;
+  border-radius: 5px;
   cursor: pointer;
 }
 
+header button:hover {
+  background-color: #606090;
+}
+
+/* SIDEBAR */
 #sidebar {
+  background-color: #2a2a3d;
+  color: #e0e0e0;
+  width: 250px;
+  height: 100vh;
   position: fixed;
   top: 0;
-  left: -250px;
-  width: 250px;
-  height: 100%;
-  background: var(--dark-secondary);
-  transition: 0.3s;
-  padding-top: 50px;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.5);
-  z-index: 10;
+  left: -260px;
+  transition: left 0.3s ease;
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 999;
 }
 
 #sidebar.active { left: 0; }
 
 #sidebar button {
-  width: 90%;
-  margin: 10px auto;
-  display: block;
-  padding: 10px;
-  background: #333;
+  background-color: #3a3a50;
+  color: #e0e0e0;
   border: none;
-  color: var(--dark-text);
+  padding: 10px 15px;
+  text-align: left;
+  width: 90%;
   cursor: pointer;
   border-radius: 5px;
-  text-align: left;
+  margin: 0 auto;
 }
 
-#sidebar button:hover { background: #444; }
+#sidebar button:hover {
+  background-color: #505070;
+}
 
+/* CHAT AREA */
 #chatArea {
+  margin-top: 60px;
   margin-left: 0;
-  padding: 10px;
-  transition: margin-left 0.3s;
+  padding: 20px;
+  min-height: calc(100vh - 70px);
+  background-color: #1e1e2f;
+  transition: margin-left 0.3s ease;
 }
 
-#chatArea.active { margin-left: 250px; }
+#chatArea.sidebar-open { margin-left: 250px; }
 
-#messages {
-  height: calc(100vh - 180px);
-  overflow-y: auto;
-  padding: 10px;
-  background: var(--dark-bg);
-}
-
+/* CHAT MESSAGES */
 .message {
-  margin: 5px 0;
-  padding: 8px 12px;
-  border-radius: 10px;
+  background-color: #2a2a3d;
+  color: #e0e0e0;
+  padding: 10px 15px;
+  margin: 10px 0;
+  border-radius: 8px;
   max-width: 80%;
 }
 
-.userMsg { background: #3a3a4d; margin-left: auto; }
-.botMsg { background: #44445a; margin-right: auto; }
+.message.bot { background-color: #3a3a50; }
 
 #typing {
   font-style: italic;
-  margin: 5px;
+  color: #b0b0b0;
+  margin: 5px 0;
+}
+
+/* PANEL */
+#panel {
   display: none;
+  background-color: #2a2a3d;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+/* CHAT INPUT BAR */
+#chatInputContainer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  background-color: #2a2a3d;
+  padding: 10px;
+  gap: 10px;
 }
 
 #chatInput {
-  display: flex;
-  padding: 10px;
-  background: var(--dark-secondary);
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-#chatInput input {
   flex: 1;
   padding: 10px;
   border-radius: 5px;
   border: none;
-  margin-right: 5px;
-  background: #333;
-  color: var(--dark-text);
+  background-color: #3a3a50;
+  color: #e0e0e0;
 }
 
-#chatInput button {
+#sendBtn {
+  background-color: #505070;
+  color: #ffffff;
+  border: none;
   padding: 10px 15px;
   border-radius: 5px;
-  border: none;
-  background: #4a90e2;
-  color: #fff;
   cursor: pointer;
 }
 
-#settingsPanel {
-  display: none;
-  margin-top: 10px;
-  padding: 10px;
-  background: var(--dark-secondary);
-}
-
-#settingsPanel label {
-  display: block;
-  margin: 10px 0 5px;
-}
-
-select, input[type="checkbox"] {
-  padding: 5px;
-}
-
-#sidebar img { width: 30px; margin-right: 5px; vertical-align: middle; }
+#sendBtn:hover { background-color: #606090; }
 </style>
 </head>
-
 <body>
+
 <header>
-  <span class="hamburger" onclick="toggleSidebar()">☰</span>
-  <h1>BotFusion AI</h1>
+  <button id="menuBtn">&#9776;</button>
+  <span>BotFusion AI</span>
   <div>
-    <button onclick="toggleTheme()">Theme</button>
-    <button id="loginBtn" onclick="googleLogin()">Login</button>
+    <button id="themeBtn">Theme</button>
+    <button id="loginBtn">Login</button>
   </div>
 </header>
 
 <div id="sidebar">
-  <button onclick="newChat()">New Chat</button>
-  <button onclick="showAccount()">Account</button>
-  <button onclick="showSettings()">Settings</button>
-  <button onclick="summarizeChat()">Summarize</button>
-  <button onclick="analyzeChat()">Analyze</button>
-  <button onclick="makeList()">Make List</button>
-  <button onclick="generateImage()">Generate Image</button>
-  <button onclick="logout()">Logout</button>
+  <button id="newChatBtn">New Chat</button>
+  <button id="accountBtn">Account</button>
+  <button id="settingsBtn">Settings</button>
+  <button id="logoutBtn">Logout</button>
 </div>
 
 <div id="chatArea">
   <div id="messages"></div>
-  <div id="typing">Bot is typing...</div>
+  <div id="typing"></div>
+  <div id="panel"><div id="panelContent"></div></div>
 </div>
 
-<div id="chatInput">
-  <input type="text" id="message" placeholder="Type a message..." />
-  <button onclick="sendMessage()">Send</button>
-</div>
-
-<div id="settingsPanel">
-  <label for="languageSelect">Language:</label>
-  <select id="languageSelect">
-    <option value="en">English</option>
-    <option value="hi">Hindi</option>
-  </select>
-  <label>
-    Dark Theme:
-    <input type="checkbox" id="themeToggle" onchange="toggleTheme()" checked>
-  </label>
+<div id="chatInputContainer">
+  <input type="text" id="chatInput" placeholder="Type a message...">
+  <button id="sendBtn">Send</button>
 </div>
 
 <script>
-// Firebase Config
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyDA62eN5MEjX9Z-gw6w9UuR8L-Ke_6J7eE",
   authDomain: "botfusion-ai-bd6d0.firebaseapp.com",
@@ -218,142 +204,99 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db = firebase.firestore();
 
+// Sidebar toggle
+const menuBtn = document.getElementById('menuBtn');
+const sidebar = document.getElementById('sidebar');
+const chatArea = document.getElementById('chatArea');
+menuBtn.addEventListener('click', () => {
+  sidebar.classList.toggle('active');
+  chatArea.classList.toggle('sidebar-open');
+});
+
+// Theme switch
+const themeBtn = document.getElementById('themeBtn');
+let darkMode = true;
+themeBtn.addEventListener('click', () => {
+  darkMode = !darkMode;
+  document.body.style.backgroundColor = darkMode ? '#1e1e2f' : '#ffffff';
+  document.body.style.color = darkMode ? '#e0e0e0' : '#111111';
+  chatArea.style.backgroundColor = darkMode ? '#1e1e2f' : '#f0f0f0';
+});
+
+// Chat send
+const sendBtn = document.getElementById('sendBtn');
+const chatInput = document.getElementById('chatInput');
 const messagesDiv = document.getElementById('messages');
 const typingDiv = document.getElementById('typing');
 
-// Sidebar toggle
-function toggleSidebar(){
-  document.getElementById('sidebar').classList.toggle('active');
-  document.getElementById('chatArea').classList.toggle('active');
-}
+sendBtn.addEventListener('click', sendMsg);
+chatInput.addEventListener('keypress', e => { if(e.key==='Enter') sendMsg(); });
 
-// Theme toggle
-function toggleTheme(){
-  const isDark = document.getElementById('themeToggle').checked;
-  if(isDark){
-    document.body.style.background = "#1e1e2f";
-    document.body.style.color = "#e0e0e0";
-  } else {
-    document.body.style.background = "#ffffff";
-    document.body.style.color = "#111";
+function sendMsg() {
+  const msg = chatInput.value.trim();
+  if(msg){
+    const div = document.createElement('div');
+    div.classList.add('message');
+    div.textContent = msg;
+    messagesDiv.appendChild(div);
+    chatInput.value = '';
+    typingDiv.textContent = 'Bot is typing...';
+    setTimeout(() => {
+      const botDiv = document.createElement('div');
+      botDiv.classList.add('message','bot');
+      botDiv.textContent = 'This is a bot reply';
+      messagesDiv.appendChild(botDiv);
+      typingDiv.textContent = '';
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    },1000);
   }
 }
 
-// Add message
-function addMessage(text,sender){
-  const div=document.createElement('div');
-  div.classList.add('message',sender==='user'?'userMsg':'botMsg');
-  div.textContent=text;
-  messagesDiv.appendChild(div);
-  messagesDiv.scrollTop=messagesDiv.scrollHeight;
-}
+// Sidebar panel
+const panel = document.getElementById('panel');
+const panelContent = document.getElementById('panelContent');
 
-// Language dictionary
-const translations = {
-  'en': { reply: 'Bot reply to:' },
-  'hi': { reply: 'बॉट का जवाब:' }
-};
+document.getElementById('newChatBtn').addEventListener('click', () => { panel.style.display='none'; });
 
-function getCurrentLanguage(){
-  return document.getElementById('languageSelect').value;
-}
+document.getElementById('settingsBtn').addEventListener('click', () => {
+  panel.style.display='block';
+  panelContent.innerHTML = `
+    <h3>Settings</h3>
+    <button id="panelThemeBtn">Switch Theme</button><br><br>
+    <label for="languageSelect">Select Language:</label>
+    <select id="languageSelect">
+      <option value="en">English</option>
+      <option value="hi">Hindi</option>
+      <option value="es">Spanish</option>
+      <option value="fr">French</option>
+      <option value="de">German</option>
+    </select>
+  `;
+  document.getElementById('panelThemeBtn').addEventListener('click', () => themeBtn.click());
+  document.getElementById('languageSelect').addEventListener('change', e => alert(`Language changed to: ${e.target.value}`));
+});
 
-// Send message
-async function sendMessage(){
-  const input=document.getElementById('message');
-  if(!input.value) return;
-  const msg=input.value;
-  addMessage(msg,'user');
-  input.value='';
-  typingDiv.style.display='block';
+// Google login/logout/account
+const loginBtn = document.getElementById('loginBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+const accountBtn = document.getElementById('accountBtn');
 
-  const user=auth.currentUser;
-  const uid=user?user.uid:'guest';
-  await db.collection('chats').add({
-    uid,
-    sender:'user',
-    message: msg,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  });
+loginBtn.addEventListener('click', async () => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  try {
+    const result = await auth.signInWithPopup(provider);
+    const user = result.user;
+    alert(`Logged in as ${user.displayName} (${user.email})`);
+  } catch(err){ alert('Login failed: '+err.message); }
+});
 
-  setTimeout(async ()=>{
-    const lang = getCurrentLanguage();
-    const botPrefix = translations[lang].reply;
-    const botReply = `${botPrefix} "${msg}"`;
-    addMessage(botReply,'bot');
-    typingDiv.style.display='none';
+logoutBtn.addEventListener('click', async () => { await auth.signOut(); alert('Logged out!'); });
 
-    await db.collection('chats').add({
-      uid,
-      sender:'bot',
-      message: botReply,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    });
-  },1200);
-}
-
-// Helper to get last user message
-function getLastUserMessage(){
-  const allMsgs = messagesDiv.querySelectorAll('.userMsg');
-  if(allMsgs.length===0) return null;
-  return allMsgs[allMsgs.length-1].textContent;
-}
-
-// Generic API call
-async function callAPI(endpoint, message, action){
-  try{
-    const response = await fetch(endpoint, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({message, action})
-    });
-    const data = await response.json();
-    return data.reply || data.url || 'No response';
-  }catch(err){
-    console.error(err);
-    return '⚠️ Error connecting to server';
-  }
-}
-
-// Action buttons
-async function summarizeChat(){ const msg=getLastUserMessage(); if(!msg)return; addMessage(await callAPI('/api/chat',msg,'summarize'),'bot'); }
-async function analyzeChat(){ const msg=getLastUserMessage(); if(!msg)return; addMessage(await callAPI('/api/chat',msg,'analyze'),'bot'); }
-async function makeList(){ const msg=getLastUserMessage(); if(!msg)return; addMessage(await callAPI('/api/chat',msg,'list'),'bot'); }
-async function generateImage(){ const msg=getLastUserMessage(); if(!msg)return; const res=await callAPI('/api/image',msg); const img=document.createElement('img'); img.src=res.url; img.style.maxWidth='100%'; messagesDiv.appendChild(img); messagesDiv.scrollTop=messagesDiv.scrollHeight; }
-
-// Menu actions
-function newChat(){ messagesDiv.innerHTML=''; }
-function showSettings(){ document.getElementById('settingsPanel').style.display='block'; }
-function showAccount(){ const user=auth.currentUser; if(user){ alert(`Logged in as: ${user.displayName} (${user.email})`); } else { alert('Not logged in'); } }
-async function logout(){ await auth.signOut(); alert('Logged out'); }
-
-// Google login
-async function googleLogin(){
-  const provider=new firebase.auth.GoogleAuthProvider();
-  try{
-    const result=await auth.signInWithPopup(provider);
-    const user=result.user;
-    document.getElementById('loginBtn').textContent='Logged in';
-    alert(`Logged in as: ${user.displayName} (${user.email})`);
-  }catch(e){ alert(e.message); }
-}
-
-// Load chat history
-auth.onAuthStateChanged(user=>{
-  if(user){
-    document.getElementById('loginBtn').textContent='Logged in';
-    db.collection('chats')
-      .where('uid','==',user.uid)
-      .orderBy('timestamp')
-      .get()
-      .then(snapshot=>{
-        snapshot.forEach(doc=>{
-          addMessage(doc.data().message,doc.data().sender);
-        });
-      });
-  }
+accountBtn.addEventListener('click', () => {
+  const user = auth.currentUser;
+  if(user) alert(`Profile:\nName: ${user.displayName}\nEmail: ${user.email}`);
+  else alert('Not logged in');
 });
 </script>
 </body>
