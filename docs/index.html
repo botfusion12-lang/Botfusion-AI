@@ -174,7 +174,15 @@ window.sendMessage = function(){
 
 // LOGIN
 window.login = function(){
-  signInWithPopup(auth, provider).catch(err=>alert(err.message));
+  await signInWithRedirect(auth, provider);.catch(err=>alert(err.message));
+  import { getRedirectResult } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+getRedirectResult(auth).then(result => {
+  if (result && result.user) {
+    document.getElementById("userName").innerText =
+      result.user.displayName + " (" + result.user.email + ")";
+  }
+}).catch(console.error);
 }
 
 window.logout = function(){
