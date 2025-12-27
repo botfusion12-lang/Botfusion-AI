@@ -208,6 +208,22 @@ select{
 
 <!-- FIREBASE + GOOGLE LOGIN -->
 <script type="module">
+  const appContent = document.querySelector(".main");
+
+onAuthStateChanged(auth, (user) => {
+  const info = document.getElementById("user-info");
+  const name = document.getElementById("user-name");
+
+  if (user) {
+    info.style.display = "block";
+    name.innerText = user.displayName;
+    appContent.style.display = "block";
+  } else {
+    info.style.display = "none";
+    appContent.style.display = "none";
+    alert("Please sign in first");
+  }
+});
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
   from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
