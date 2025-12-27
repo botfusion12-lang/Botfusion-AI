@@ -6,175 +6,113 @@
 <title>BotFusion</title>
 
 <style>
-/* ---------- BASE ---------- */
-:root{
-  --bg:#2a2a2a;
-  --panel:#1f1f1f;
-  --text:#f5f5f5;
-  --sub:#b7b7b7;
-  --accent:#3a82ff;
-}
-
 body{
   margin:0;
-  font-family: system-ui, Arial, sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  display:flex;
-  height:100vh;
-  overflow:hidden;
+  font-family: system-ui, Arial;
+  background:#1f1f1f;
+  color:white;
 }
 
-/* ---------- SIDEBAR ---------- */
-.sidebar{
-  width:260px;
-  background:#181818;
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 16px;
+  background:#2a2a2a;
+}
+
+header h2{
+  margin:0;
+}
+
+.menu-icon{
+  font-size:28px;
+  cursor:pointer;
+}
+
+#drawer{
   position:fixed;
   top:0;
   left:-260px;
+  width:240px;
   height:100%;
-  transition:.25s;
-  z-index:1000;
-  display:flex;
-  flex-direction:column;
+  background:#111;
+  padding:20px;
+  transition:.3s;
 }
 
-.sidebar.open{
-  left:0;
-}
-
-.sidebar header{
-  padding:16px;
-  font-weight:700;
-  border-bottom:1px solid #2f2f2f;
-}
-
-.sidebar button{
-  background:none;
-  border:none;
-  color:var(--text);
-  padding:14px 18px;
-  text-align:left;
-  font-size:15px;
-  width:100%;
+.drawer-item{
+  padding:12px 0;
+  border-bottom:1px solid #333;
   cursor:pointer;
 }
 
-.sidebar button:hover{
-  background:#2b2b2b;
-}
-
-/* ---------- HEADER ---------- */
-header.app-header{
-  height:52px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:0 14px;
-  border-bottom:1px solid #2f2f2f;
-  position:fixed;
-  width:100%;
-  top:0;
-  left:0;
-  z-index:5;
-  background:#1f1f1f;
-}
-
-.menu-btn{
-  background:none;
-  border:none;
-  color:white;
-  font-size:22px;
-  cursor:pointer;
-}
-
-/* ---------- MAIN ---------- */
 main{
-  margin-top:52px;
-  width:100%;
-  display:flex;
-  flex-direction:column;
-  position:relative;
-}
-
-/* sections */
-.screen{
-  display:none;
-  height:100%;
-  overflow-y:auto;
   padding:16px;
 }
 
-.screen.active{
-  display:block;
+.btn{
+  width:100%;
+  border-radius:6px;
+  border:1px solid #333;
+  padding:14px;
+  text-align:center;
+  cursor:pointer;
+  background:#fff;
+  color:#000;
+  margin-bottom:18px;
+  font-weight:600;
 }
 
-/* ---------- HOME CARDS ---------- */
 .card{
-  background:var(--panel);
-  border:1px solid #2f2f2f;
+  background:#222;
   padding:14px;
   border-radius:10px;
-  margin-bottom:10px;
-}
-
-/* ---------- CHAT BOX ---------- */
-.chat-area{
-  flex:1;
-  overflow-y:auto;
-  padding:14px;
-}
-
-.chat-input{
-  display:flex;
-  padding:10px;
-  gap:10px;
-  border-top:1px solid #2f2f2f;
-  background:#1b1b1b;
-}
-
-.chat-input input{
-  flex:1;
-  padding:10px;
-  background:#262626;
-  border:1px solid #353535;
-  border-radius:8px;
-  color:white;
-}
-
-.chat-input button{
-  background:var(--accent);
-  border:none;
-  padding:10px 14px;
-  border-radius:8px;
-  color:white;
+  margin-bottom:14px;
   cursor:pointer;
 }
-
-/* typing indicator */
-#typing{
-  font-size:12px;
-  color:var(--sub);
-  padding:6px 14px;
-}
-
-/* overlay when sidebar is open */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:#0007;
-  display:none;
-  z-index:900;
-}
-
-.overlay.show{ display:block; }
 </style>
 </head>
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
 
-<script>
+<body>
+
+<header>
+  <span class="menu-icon" onclick="toggleDrawer()">≡</span>
+  <h2>BotFusion</h2>
+</header>
+
+<div id="drawer">
+  <div class="drawer-item" onclick="openHome()">🏠 Home</div>
+  <div class="drawer-item" onclick="openProfile()">👤 Profile</div>
+  <div class="drawer-item" onclick="openSettings()">⚙️ Settings</div>
+  <div class="drawer-item" onclick="openHistory()">🕘 History</div>
+  <div class="drawer-item" onclick="logout()">🚪 Logout</div>
+</div>
+
+<main>
+
+<h3>Get started</h3>
+
+<div class="btn" onclick="googleLogin()">Continue with Google</div>
+
+<div class="card" onclick="askAnything()">✨ Ask anything</div>
+<div class="card" onclick="getIdeas()">💡 Get ideas</div>
+<div class="card" onclick="learnSomething()">📚 Learn something</div>
+<div class="card" onclick="projectHelp()">🛠 Help with projects</div>
+
+<div id="profile-info" style="margin-top:20px;"></div>
+
+</main>
+
+<!-- Firebase SDK -->
+<script type="module">
+
+// ------------------ FIREBASE IMPORTS --------------------
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } 
+  from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+// ----------- 🔥 PASTE YOUR CONFIG HERE -------------
 const firebaseConfig = {
 apiKey: "AIzaSyDA62eN5MEjX9Z-gw6w9UuR8L-Ke_6J7eE",
   authDomain: "botfusion-ai-bd6d0.firebaseapp.com",
@@ -185,134 +123,54 @@ apiKey: "AIzaSyDA62eN5MEjX9Z-gw6w9UuR8L-Ke_6J7eE",
   measurementId: "G-53FTWNQB8X"
 };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const provider = new firebase.auth.GoogleAuthProvider();
-</script>
-<body>
+// Initialize
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-  <header>Menu</header>
+// ---------------- UI FUNCTIONS ----------------
+window.toggleDrawer = () => {
+  const drawer = document.getElementById("drawer");
+  drawer.style.left = drawer.style.left === "0px" ? "-260px" : "0px";
+};
 
-  <button onclick="showScreen('home')">🏠 Home</button>
-  <button onclick="showScreen('chat')">💬 New Chat</button>
-  <button onclick="showScreen('profile')">👤 Account</button>
-  <button onclick="showScreen('settings')">⚙️ Settings</button>
-  <button onclick="closeSidebar()">✖ Close</button>
-</div>
-
-<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
-
-<!-- HEADER -->
-<header class="app-header">
-  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-  <strong>BotFusion</strong>
-</header>
-
-<!-- MAIN -->
-<main>
-
-  <!-- HOME -->
-  <section id="home" class="screen active">
-    <div class="card">✨ Summarize</div>
-    <div class="card">🧠 Analyze</div>
-    <div class="card">🖼️ Create Image</div>
-    <div class="card">📝 Make a List</div>
-  </section>
-
-  <!-- CHAT -->
-  <section id="chat" class="screen">
-    <div id="chatLog" class="chat-area"></div>
-    <div id="typing"></div>
-
-    <div class="chat-input">
-      <input id="msg" placeholder="Send a message..." />
-      <button onclick="sendMessage()">Send</button>
-    </div>
-  </section>
-
-  <!-- PROFILE -->
-  <section id="profile" class="screen">
-    <div class="card">
-      <h3>Your Profile</h3>
-      <p id="profile-info">Login coming soon…</p>
-    </div>
-  </section>
-
-  <!-- SETTINGS -->
-  <section id="settings" class="screen">
-    <div class="card">
-      <h3>Theme</h3>
-      <button onclick="toggleTheme()">Toggle Dark / Light</button>
-    </div>
-
-    <div class="card">
-      <h3>Language</h3>
-      <small>(placeholder — we’ll wire later)</small>
-    </div>
-  </section>
-
-</main>
-
-<script>
-/* -------- SIDEBAR -------- */
-const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
-
-function toggleSidebar(){
-  sidebar.classList.toggle("open");
-  overlay.classList.toggle("show");
-}
-
-function closeSidebar(){
-  sidebar.classList.remove("open");
-  overlay.classList.remove("show");
-}
-
-/* -------- SCREENS -------- */
-function showScreen(name){
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-  document.getElementById(name).classList.add("active");
-  closeSidebar();
-}
-
-/* -------- CHAT -------- */
-const chatLog = document.getElementById("chatLog");
-const typing = document.getElementById("typing");
-
-function sendMessage(){
-  const val = document.getElementById("msg").value.trim();
-  if(!val) return;
-
-  chatLog.innerHTML += `<div><b>You:</b> ${val}</div>`;
-  document.getElementById("msg").value = "";
-
-  typing.innerText = "Bot is typing…";
-
-  setTimeout(()=>{
-    typing.innerText = "";
-    chatLog.innerHTML += `<div><b>Bot:</b> (backend coming soon)</div>`;
-    chatLog.scrollTop = chatLog.scrollHeight;
-  }, 900);
-}
-
-/* -------- THEME -------- */
-let light = false;
-
-function toggleTheme(){
-  light = !light;
-
-  if(light){
-    document.documentElement.style.setProperty("--bg","#f5f5f5");
-    document.documentElement.style.setProperty("--panel","#ffffff");
-    document.documentElement.style.setProperty("--text","#111");
-  } else {
-    document.documentElement.style.setProperty("--bg","#2a2a2a");
-    document.documentElement.style.setProperty("--panel","#1f1f1f");
-    document.documentElement.style.setProperty("--text","#f5f5f5");
+window.googleLogin = async () => {
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (e) {
+    alert("Login failed");
+    console.error(e);
   }
-}
+};
+
+window.logout = async () => {
+  await signOut(auth);
+};
+
+onAuthStateChanged(auth, (user) => {
+  const profile = document.getElementById("profile-info");
+  if (user) {
+    profile.innerHTML = `
+      <p>Logged in as:</p>
+      <strong>${user.displayName}</strong><br/>
+      <small>${user.email}</small>
+    `;
+  } else {
+    profile.innerHTML = "";
+  }
+});
+
+// Clickable icon handlers
+window.openHome = () => alert("Home clicked");
+window.openProfile = () => alert("Profile page coming soon");
+window.openSettings = () => alert("Settings coming soon");
+window.openHistory = () => alert("History coming soon");
+
+window.askAnything = () => alert("Ask anything");
+window.getIdeas = () => alert("Ideas page");
+window.learnSomething = () => alert("Learn section");
+window.projectHelp = () => alert("Project help");
+
 </script>
 
 </body>
