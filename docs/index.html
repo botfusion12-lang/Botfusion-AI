@@ -170,7 +170,25 @@ main{
 .overlay.show{ display:block; }
 </style>
 </head>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
 
+<script>
+const firebaseConfig = {
+apiKey: "AIzaSyDA62eN5MEjX9Z-gw6w9UuR8L-Ke_6J7eE",
+  authDomain: "botfusion-ai-bd6d0.firebaseapp.com",
+  projectId: "botfusion-ai-bd6d0",
+  storageBucket: "botfusion-ai-bd6d0.firebasestorage.app",
+  messagingSenderId: "730477136598",
+  appId: "1:730477136598:web:c6b4e0d495744d12079777",
+  measurementId: "G-53FTWNQB8X"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
+</script>
 <body>
 
 <!-- SIDEBAR -->
@@ -236,69 +254,7 @@ main{
   </section>
 
 </main>
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js"></script>
 
-<script>
-  // 🔥 Your Firebase config (copy from Firebase → Project Settings)
-  const firebaseConfig = {
-    apiKey: "AIzaSyDA62eN5MEjX9Z-gw6w9UuR8L-Ke_6J7eE",
-  authDomain: "botfusion-ai-bd6d0.firebaseapp.com",
-  projectId: "botfusion-ai-bd6d0",
-  storageBucket: "botfusion-ai-bd6d0.firebasestorage.app",
-  messagingSenderId: "730477136598",
-  appId: "1:730477136598:web:c6b4e0d495744d12079777",
-  measurementId: "G-53FTWNQB8X"
-  };
-
-  // init
-  const app = firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-
-  const loginBtn = document.getElementById("googleLogin");
-  const profileBox = document.getElementById("profile-info");
-  const nameEl = document.getElementById("profile-name");
-  const emailEl = document.getElementById("profile-email");
-  const logoutBtn = document.getElementById("logout");
-
-  // ⭐ Google Provider
-  const provider = new firebase.auth.GoogleAuthProvider();
-
-  // LOGIN
-  loginBtn.onclick = () => {
-    auth.signInWithPopup(provider)
-      .then(result => {
-        const user = result.user;
-
-        nameEl.textContent = user.displayName;
-        emailEl.textContent = user.email;
-
-        loginBtn.style.display = "none";
-        profileBox.style.display = "block";
-      })
-      .catch(err => alert(err.message));
-  };
-
-  // LOGOUT
-  logoutBtn.onclick = () => {
-    auth.signOut().then(() => {
-      profileBox.style.display = "none";
-      loginBtn.style.display = "block";
-    });
-  };
-
-  // AUTO LOGIN CHECK
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      nameEl.textContent = user.displayName;
-      emailEl.textContent = user.email;
-
-      loginBtn.style.display = "none";
-      profileBox.style.display = "block";
-    }
-  });
-      </script>
 <script>
 /* -------- SIDEBAR -------- */
 const sidebar = document.getElementById("sidebar");
