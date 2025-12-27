@@ -1,137 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BotFusion AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BotFusion</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --bg-color: #2a2a2a;
+    --card-color: #383838;
+    --text-color: #fff;
+    --sidebar-width: 250px;
+  }
+  * {margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
+  body {background-color: var(--bg-color); color: var(--text-color); overflow-x:hidden;}
   
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-firestore-compat.js"></script>
+  /* Header */
+  header {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 15px; background-color:#1f1f1f; position:fixed; width:100%; z-index:10;
+  }
+  header .menu-icon, header .home-icon {font-size:24px; cursor:pointer;}
+  header h1 {font-size:20px; font-weight:bold;}
 
-  <!-- Styles -->
-  <style>
-    body { margin:0; font-family: sans-serif; background:#2a2a2a; color:#fff; }
-    header { display:flex; justify-content:space-between; align-items:center; padding:10px 20px; background:#1f1f1f; }
-    header h1 { margin:0; font-size:1.4rem; }
-    #hamburger { cursor:pointer; font-size:1.4rem; }
-    #sidebar { position:fixed; top:0; left:-250px; width:250px; height:100%; background:#1f1f1f; padding:20px; transition:0.3s; overflow-y:auto; z-index:1000; }
-    #sidebar.active { left:0; }
-    #sidebar button { display:block; width:100%; margin:10px 0; padding:10px; font-size:1rem; background:#2a2a2a; color:#fff; border:none; cursor:pointer; text-align:left; }
-    #sidebar #profile-info { margin:15px 0; text-align:center; }
-    main { padding:20px; margin-top:10px; }
-    .home-btn { background:#2a2a2a; border:none; padding:15px; margin:10px 0; width:100%; font-size:1rem; cursor:pointer; text-align:left; }
-    #chatArea { margin-top:20px; }
-    #userInput { width:calc(100% - 60px); padding:10px; background:#1f1f1f; color:#fff; border:none; }
-    #sendBtn { padding:10px; background:#007bff; color:#fff; border:none; cursor:pointer; }
-    .chat-msg { margin:5px 0; padding:10px; background:#3a3a3a; border-radius:5px; }
-    .chat-msg.user { background:#0056b3; color:#fff; }
-  </style>
+  /* Sidebar */
+  #sidebar {
+    position:fixed; top:0; left:-var(--sidebar-width);
+    width:var(--sidebar-width); height:100%; background-color:#1f1f1f;
+    transition: left 0.3s; padding-top:60px; z-index:9;
+  }
+  #sidebar.active {left:0;}
+  #sidebar button, #sidebar .item {
+    width:90%; margin:10px auto; padding:12px; background-color: var(--card-color);
+    border:none; border-radius:6px; cursor:pointer; color: var(--text-color);
+    display:flex; align-items:center; gap:10px; font-size:16px;
+  }
+  #sidebar button:hover, #sidebar .item:hover {background-color:#4a4a4a;}
+
+  /* Profile info */
+  #profile-info {margin-bottom:15px; padding:12px; background-color:#383838; border-radius:8px; display:none; align-items:center; gap:10px;}
+  #profile-info img {width:40px; height:40px; border-radius:50%;}
+
+  /* Main content */
+  main {padding:70px 15px 15px 15px;}
+  .card {background-color: var(--card-color); padding:15px; border-radius:8px; margin-bottom:15px; cursor:pointer; display:flex; align-items:center; gap:10px;}
+  .card:hover {background-color:#4a4a4a;}
+
+  /* Google login */
+  #google-login {width:100%; text-align:center; background-color:#fff; color:#000; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer; margin-bottom:15px;}
+</style>
 </head>
 <body>
 
-  <!-- Sidebar -->
-  <div id="sidebar">
-    <div id="profile-info"></div>
-    <button id="googleLoginBtn">Continue with Google</button>
-    <button onclick="showHome()">✨ Ask anything</button>
-    <button onclick="showIdeas()">💡 Get ideas</button>
-    <button onclick="showLearn()">📚 Learn something</button>
-    <button onclick="showProjects()">🛠 Help with projects</button>
-    <button onclick="closeSidebar()">❌ Close</button>
+<header>
+  <i class="fas fa-bars menu-icon" onclick="toggleSidebar()"></i>
+  <h1>BotFusion</h1>
+  <i class="fas fa-home home-icon" onclick="showHome()"></i>
+</header>
+
+<div id="sidebar">
+  <div id="profile-info">
+    <img id="profile-pic" src="" alt="Profile">
+    <span id="profile-name"></span>
   </div>
+  <button id="google-login">Continue with Google</button>
+  <div class="item" onclick="startChat()">✨ Ask anything</div>
+  <div class="item" onclick="getIdeas()">💡 Get ideas</div>
+  <div class="item" onclick="learnSomething()">📚 Learn something</div>
+  <div class="item" onclick="helpProjects()">🛠 Help with projects</div>
+</div>
 
-  <!-- Header -->
-  <header>
-    <span id="hamburger">☰</span>
-    <h1>BotFusion</h1>
-  </header>
+<main id="main-content">
+  <div class="card" onclick="startChat()">✨ Start chatting</div>
+  <div class="card" onclick="viewProfile()">👤 View profile</div>
+  <div class="card" onclick="manageAccount()">🪪 Manage account</div>
+  <div class="card" onclick="openSettings()">⚙ Settings</div>
+</main>
 
-  <!-- Main content -->
-  <main>
-    <div id="homeContent">
-      <button class="home-btn" onclick="startChat()">✨ Start chatting</button>
-      <button class="home-btn" onclick="viewProfile()">👤 View profile</button>
-      <button class="home-btn" onclick="manageAccount()">🪪 Manage account</button>
-      <button class="home-btn" onclick="openSettings()">⚙ Settings</button>
-    </div>
-
-    <div id="chatArea"></div>
-    <div style="display:flex; margin-top:10px;">
-      <input id="userInput" placeholder="Type a message..." />
-      <button id="sendBtn" onclick="sendMessage()">Send</button>
-    </div>
-  </main>
-
-  <!-- Scripts -->
-  <script>
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyDA62eN5MEjX9Z-gw6w9UuR8L-Ke_6J7eE",
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script>
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDA62eN5MEjX9Z-gw6w9UuR8L-Ke_6J7eE",
   authDomain: "botfusion-ai-bd6d0.firebaseapp.com",
   projectId: "botfusion-ai-bd6d0",
   storageBucket: "botfusion-ai-bd6d0.firebasestorage.app",
   messagingSenderId: "730477136598",
   appId: "1:730477136598:web:c6b4e0d495744d12079777",
   measurementId: "G-53FTWNQB8X"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const provider = new firebase.auth.GoogleAuthProvider();
 
-    // Sidebar toggle
-    const sidebar = document.getElementById("sidebar");
-    document.getElementById("hamburger").addEventListener("click", () => {
-      sidebar.classList.toggle("active");
-    });
-    function closeSidebar() { sidebar.classList.remove("active"); }
+  const googleBtn = document.getElementById("google-login");
+  const profileInfo = document.getElementById("profile-info");
+  const profilePic = document.getElementById("profile-pic");
+  const profileName = document.getElementById("profile-name");
 
-    // Google login
-    const googleBtn = document.getElementById("googleLoginBtn");
-    googleBtn.addEventListener("click", () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider)
-        .then((result) => {
-          const user = result.user;
-          document.getElementById("profile-info").innerHTML =
-            `<p>Welcome, ${user.displayName}</p><img src="${user.photoURL}" width="50" style="border-radius:50%;">`;
-        })
-        .catch(console.error);
-    });
-
-    // Home buttons
-    function startChat(){ alert("Start chatting clicked"); }
-    function viewProfile(){ alert("View profile clicked"); }
-    function manageAccount(){ alert("Manage account clicked"); }
-    function openSettings(){ alert("Settings clicked"); }
-    function showHome(){ alert("Ask anything clicked"); }
-    function showIdeas(){ alert("Get ideas clicked"); }
-    function showLearn(){ alert("Learn something clicked"); }
-    function showProjects(){ alert("Help with projects clicked"); }
-
-    // Chat backend
-    const CHAT_API = "YOUR_FIREBASE_FUNCTION_URL";
-    function sendMessage(){
-      const input = document.getElementById("userInput");
-      const chat = document.getElementById("chatArea");
-      if(!input.value.trim()) return;
-      const userMsg = input.value;
-      chat.innerHTML += `<div class="chat-msg user"><b>You:</b> ${userMsg}</div>`;
-      input.value = "";
-      fetch(CHAT_API, {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({message:userMsg})
+  googleBtn.addEventListener("click", () => {
+    auth.signInWithPopup(provider)
+      .then((result) => {
+        const user = result.user;
+        profilePic.src = user.photoURL;
+        profileName.textContent = user.displayName;
+        profileInfo.style.display = "flex";
+        googleBtn.style.display = "none";
       })
-      .then(res => res.json())
-      .then(data => {
-        chat.innerHTML += `<div class="chat-msg"><b>BotFusion:</b> ${data.reply}</div>`;
-      })
-      .catch(err => {
-        chat.innerHTML += `<div class="chat-msg" style="color:red;">Error: ${err}</div>`;
-      });
-    }
-  </script>
+      .catch(err => console.error(err));
+  });
+
+  function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("active");
+  }
+
+  function showHome() { alert("Home clicked"); }
+  function startChat() { alert("Start Chat clicked"); }
+  function viewProfile() { alert("View Profile clicked"); }
+  function manageAccount() { alert("Manage Account clicked"); }
+  function openSettings() { alert("Settings clicked"); }
+  function getIdeas() { alert("Get Ideas clicked"); }
+  function learnSomething() { alert("Learn Something clicked"); }
+  function helpProjects() { alert("Help Projects clicked"); }
+</script>
 
 </body>
 </html>
