@@ -3,49 +3,52 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Botfusion</title>
-
+<title>Botfusion AI</title>
 <style>
-/* ---------- GLOBAL ---------- */
 :root {
   --bg-color: #2a2a2a;
   --header-color: #1f1f1f;
-  --card-color: #1f1f1f;
   --sidebar-color: #111;
-  --sidebar-btn-color: #2a2a2a;
-  --sidebar-btn-hover: #3a3a3a;
-  --text-color: #fff;
+  --card-color: #1f1f1f;
+  --button-color: #2a2a2a;
+  --button-hover: #3a3a3a;
+  --text-color: white;
 }
+
 body {
-  margin: 0;
+  margin:0;
   font-family: Arial, sans-serif;
   background: var(--bg-color);
   color: var(--text-color);
   overflow-x: hidden;
 }
 
-/* ---------- HEADER ---------- */
-.header {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
+/* HEADER */
+.header{
+  display:flex;
+  align-items:center;
+  padding:12px 16px;
   background: var(--header-color);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 999;
 }
-.hamburger {
-  font-size: 24px;
-  cursor: pointer;
-  margin-right: 12px;
+.hamburger{
+  font-size:24px;
+  cursor:pointer;
+  margin-right:12px;
 }
 
-/* ---------- SIDEBAR ---------- */
+/* SIDEBAR */
 .sidebar {
   position: fixed;
   top: 0;
-  left: -280px;
+  left: -280px; /* fully hidden */
   width: 280px;
   height: 100vh;
   background: var(--sidebar-color);
-  transition: 0.3s;
+  transition: left 0.3s ease;
   padding: 16px;
   overflow-y: auto;
   z-index: 1000;
@@ -54,95 +57,63 @@ body {
   left: 0;
 }
 .sidebar-close {
-  cursor: pointer;
   text-align: right;
-  font-size: 18px;
+  cursor: pointer;
+  font-size: 20px;
   margin-bottom: 10px;
 }
-.sidebar button {
-  width: 100%;
-  padding: 10px;
-  margin: 6px 0;
-  background: var(--sidebar-btn-color);
+.sidebar button{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  background: var(--button-color);
   color: var(--text-color);
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
 }
-.sidebar button:hover {
-  background: var(--sidebar-btn-hover);
+.sidebar button:hover{
+  background: var(--button-hover);
 }
 
-/* ---------- HOME CARDS ---------- */
-.home-cards {
-  padding: 20px;
-  transition: margin-left 0.3s;
+/* HOME CARDS */
+.main-content{
+  padding:80px 20px 20px 20px;
 }
-.card {
+.card{
   background: var(--card-color);
-  padding: 18px;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  padding:18px;
+  border-radius:10px;
+  margin-bottom:10px;
 }
 
-/* ---------- PROFILE ---------- */
-#profile-section, #account-section, #settings-section {
-  display: none;
-  padding: 20px;
+/* PROFILE */
+#profile-section{
+  display:none;
+  padding:20px;
 }
-#profile-info img {
-  width: 75px;
-  height: 75px;
-  border-radius: 50%;
-  margin-bottom: 10px;
-  object-fit: cover;
-}
-
-/* ---------- CHAT ---------- */
-.chat-container {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 60px);
-}
-#chat-box {
-  flex: 1;
-  padding: 10px;
-  overflow-y: auto;
-}
-#input-container {
-  display: flex;
-  padding: 10px;
-  background: var(--header-color);
-}
-#userInput {
-  flex: 1;
-  padding: 8px;
-  border-radius: 6px;
-  border: none;
-}
-#sendBtn {
-  padding: 8px 12px;
-  margin-left: 8px;
-  border-radius: 6px;
-  border: none;
-  background: var(--sidebar-btn-color);
-  color: var(--text-color);
-  cursor: pointer;
+#profile-info img{
+  width:75px;
+  height:75px;
+  border-radius:50%;
+  margin-bottom:10px;
+  object-fit:cover;
 }
 
-/* ---------- THEME SWITCH ---------- */
-.theme-btn {
-  display: inline-block;
-  margin: 5px;
-  padding: 6px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  background: var(--sidebar-btn-color);
-  color: var(--text-color);
+/* THEME / LANGUAGE SWITCH */
+.switch-label{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  margin:10px 0;
+}
+select{
+  padding:5px;
+  border-radius:5px;
+  border:none;
 }
 </style>
 </head>
-
 <body>
 
 <!-- HEADER -->
@@ -153,72 +124,63 @@ body {
 
 <!-- SIDEBAR -->
 <div id="sidebar" class="sidebar">
-  <div class="sidebar-close" onclick="toggleSidebar()">✖</div>
+  <div class="sidebar-close" onclick="closeSidebar()">✖</div>
   <button onclick="showHome()">🏠 Home</button>
   <button onclick="startChat()">💬 Start Chatting</button>
   <button onclick="showProfile()">👤 View Profile</button>
   <button onclick="manageAccount()">⚙ Manage Account</button>
   <button onclick="openSettings()">🛠 Settings</button>
+
   <hr>
+
+  <div class="switch-label">
+    Theme:
+    <select id="themeSelect" onchange="switchTheme()">
+      <option value="dark">Dark (default)</option>
+      <option value="light">Light</option>
+      <option value="blue">Blue</option>
+      <option value="green">Green</option>
+      <option value="purple">Purple</option>
+    </select>
+  </div>
+
+  <div class="switch-label">
+    Language:
+    <select id="languageSelect" onchange="switchLanguage()">
+      <option value="en">English</option>
+      <option value="hi">Hindi</option>
+      <option value="es">Spanish</option>
+      <option value="fr">French</option>
+      <option value="de">German</option>
+      <!-- Add 100+ languages -->
+    </select>
+  </div>
+
   <button id="loginBtn" onclick="googleLogin()">🔑 Login with Google</button>
   <button id="logoutBtn" onclick="logout()" style="display:none;">🚪 Logout</button>
 </div>
 
-<!-- HOME -->
-<div id="home" class="home-cards">
-  <div class="card">✨ Start chatting smarter</div>
-  <div class="card">🤖 AI help whenever you need</div>
-  <div class="card">⚡ Fast, modern experience</div>
-</div>
-
-<!-- PROFILE -->
-<div id="profile-section">
-  <h3>Your Profile</h3>
-  <div id="profile-info"></div>
-</div>
-
-<!-- ACCOUNT -->
-<div id="account-section">
-  <h3>Manage Account</h3>
-  <p>Edit your details (coming soon)</p>
-</div>
-
-<!-- SETTINGS -->
-<div id="settings-section">
-  <h3>Settings</h3>
-  <p>Theme:</p>
-  <div>
-    <span class="theme-btn" onclick="setTheme('#2a2a2a')">Dark Grey</span>
-    <span class="theme-btn" onclick="setTheme('#ffffff', '#000')">Light</span>
-    <span class="theme-btn" onclick="setTheme('#1f1f1f')">Dark</span>
-    <span class="theme-btn" onclick="setTheme('#0a0a0a')">Black</span>
-    <span class="theme-btn" onclick="setTheme('#3a3a3a')">Grey</span>
+<!-- MAIN CONTENT -->
+<div class="main-content">
+  <div id="home">
+    <div class="card">✨ Start chatting smarter</div>
+    <div class="card">🤖 AI help whenever you need</div>
+    <div class="card">⚡ Fast, modern experience</div>
   </div>
-  <p>Language:</p>
-  <select id="langSelect" onchange="translateUI(this.value)">
-    <option value="en" selected>English</option>
-    <option value="hi">Hindi</option>
-    <option value="mr">Marathi</option>
-    <option value="es">Spanish</option>
-  </select>
-</div>
 
-<!-- CHAT -->
-<div class="chat-container" id="chat-container" style="display:none;">
-  <div id="chat-box"></div>
-  <div id="input-container">
-    <input type="text" id="userInput" placeholder="Type your message...">
-    <button id="sendBtn" onclick="sendMessage()">Send</button>
+  <div id="profile-section">
+    <h3>Your Profile</h3>
+    <div id="profile-info"></div>
   </div>
 </div>
 
-<!-- FIREBASE -->
+<!-- FIREBASE + SCRIPT -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-/* ---------- FIREBASE CONFIG ---------- */
+/* FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyDA62eN5MEjX9Z-gw6w9UuR8L-Ke_6J7eE",
   authDomain: "botfusion-ai-bd6d0.firebaseapp.com",
@@ -233,111 +195,116 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-/* ---------- ELEMENTS ---------- */
+/* ELEMENTS */
 const sidebar = document.getElementById("sidebar");
 const home = document.getElementById("home");
 const profileSection = document.getElementById("profile-section");
-const accountSection = document.getElementById("account-section");
-const settingsSection = document.getElementById("settings-section");
 const profileInfo = document.getElementById("profile-info");
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
-const chatContainer = document.getElementById("chat-container");
-const chatBox = document.getElementById("chat-box");
-const userInput = document.getElementById("userInput");
+const themeSelect = document.getElementById("themeSelect");
+const languageSelect = document.getElementById("languageSelect");
 
-/* ---------- UI CONTROLS ---------- */
-window.toggleSidebar = () => sidebar.classList.toggle("open");
+/* SIDEBAR CONTROLS */
+window.toggleSidebar = () => {
+  if (sidebar.classList.contains("open")) {
+    closeSidebar();
+  } else {
+    sidebar.classList.add("open");
+    sidebar.style.left = "0";
+  }
+};
+window.closeSidebar = () => {
+  sidebar.classList.remove("open");
+  sidebar.style.left = "-280px";
+};
+
+/* VIEW FUNCTIONS */
 window.showHome = () => {
   home.style.display = "block";
   profileSection.style.display = "none";
-  accountSection.style.display = "none";
-  settingsSection.style.display = "none";
-  chatContainer.style.display = "none";
 };
 window.showProfile = () => {
   home.style.display = "none";
   profileSection.style.display = "block";
-  accountSection.style.display = "none";
-  settingsSection.style.display = "none";
-  chatContainer.style.display = "none";
 };
-window.manageAccount = () => {
-  home.style.display = "none";
-  profileSection.style.display = "none";
-  accountSection.style.display = "block";
-  settingsSection.style.display = "none";
-  chatContainer.style.display = "none";
-};
-window.openSettings = () => {
-  home.style.display = "none";
-  profileSection.style.display = "none";
-  accountSection.style.display = "none";
-  settingsSection.style.display = "block";
-  chatContainer.style.display = "none";
-};
-window.startChat = () => {
-  home.style.display = "none";
-  profileSection.style.display = "none";
-  accountSection.style.display = "none";
-  settingsSection.style.display = "none";
-  chatContainer.style.display = "flex";
-};
+window.startChat = () => alert("Chat feature coming soon!");
+window.manageAccount = () => alert("Account manager coming soon!");
+window.openSettings = () => alert("Settings coming soon!");
 
-/* ---------- GOOGLE LOGIN ---------- */
+/* GOOGLE LOGIN */
 window.googleLogin = async () => {
-  try {
-    await signInWithPopup(auth, provider);
-  } catch (err) {
-    alert(err.message);
-  }
+  try { await signInWithPopup(auth, provider); } 
+  catch(err){ alert(err.message); }
 };
-window.logout = async () => await signOut(auth);
+window.logout = async () => { await signOut(auth); };
 
-/* ---------- LOGIN STATE ---------- */
+/* LOGIN STATE */
 onAuthStateChanged(auth, (user) => {
-  if (user) {
+  if(user){
     loginBtn.style.display = "none";
     logoutBtn.style.display = "block";
-    profileInfo.innerHTML = `
-      <img src="${user.photoURL || ''}">
-      <p><b>${user.displayName}</b></p>
-      <p>${user.email}</p>
-    `;
+    profileInfo.innerHTML = `<img src="${user.photoURL||''}"><p><b>${user.displayName}</b></p><p>${user.email}</p>`;
   } else {
     loginBtn.style.display = "block";
     logoutBtn.style.display = "none";
-    profileInfo.innerHTML = '';
+    profileInfo.innerHTML = "";
   }
 });
 
-/* ---------- CHAT FUNCTIONS ---------- */
-window.sendMessage = async () => {
-  const message = userInput.value.trim();
-  if (!message) return;
-  const msgDiv = document.createElement('div');
-  msgDiv.textContent = `You: ${message}`;
-  chatBox.appendChild(msgDiv);
-  userInput.value = '';
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  // Example: Replace with your backend call
-  const replyDiv = document.createElement('div');
-  replyDiv.textContent = `Bot: This is a sample reply`;
-  chatBox.appendChild(replyDiv);
-  chatBox.scrollTop = chatBox.scrollHeight;
+/* THEME SWITCH */
+window.switchTheme = () => {
+  const val = themeSelect.value;
+  switch(val){
+    case "dark":
+      document.documentElement.style.setProperty('--bg-color','#2a2a2a');
+      document.documentElement.style.setProperty('--header-color','#1f1f1f');
+      document.documentElement.style.setProperty('--sidebar-color','#111');
+      document.documentElement.style.setProperty('--card-color','#1f1f1f');
+      document.documentElement.style.setProperty('--button-color','#2a2a2a');
+      document.documentElement.style.setProperty('--button-hover','#3a3a3a');
+      break;
+    case "light":
+      document.documentElement.style.setProperty('--bg-color','#f5f5f5');
+      document.documentElement.style.setProperty('--header-color','#ddd');
+      document.documentElement.style.setProperty('--sidebar-color','#eee');
+      document.documentElement.style.setProperty('--card-color','#fff');
+      document.documentElement.style.setProperty('--button-color','#ddd');
+      document.documentElement.style.setProperty('--button-hover','#ccc');
+      break;
+    case "blue":
+      document.documentElement.style.setProperty('--bg-color','#1e2a38');
+      document.documentElement.style.setProperty('--header-color','#15202b');
+      document.documentElement.style.setProperty('--sidebar-color','#0d161f');
+      document.documentElement.style.setProperty('--card-color','#203040');
+      document.documentElement.style.setProperty('--button-color','#1a2a3a');
+      document.documentElement.style.setProperty('--button-hover','#2a3a50');
+      break;
+    case "green":
+      document.documentElement.style.setProperty('--bg-color','#1f3320');
+      document.documentElement.style.setProperty('--header-color','#162214');
+      document.documentElement.style.setProperty('--sidebar-color','#0e1c0e');
+      document.documentElement.style.setProperty('--card-color','#203020');
+      document.documentElement.style.setProperty('--button-color','#1a2a1a');
+      document.documentElement.style.setProperty('--button-hover','#2a5030');
+      break;
+    case "purple":
+      document.documentElement.style.setProperty('--bg-color','#2a1f2a');
+      document.documentElement.style.setProperty('--header-color','#1b121b');
+      document.documentElement.style.setProperty('--sidebar-color','#120c12');
+      document.documentElement.style.setProperty('--card-color','#301f30');
+      document.documentElement.style.setProperty('--button-color','#3a2a3a');
+      document.documentElement.style.setProperty('--button-hover','#502a50');
+      break;
+  }
 };
 
-/* ---------- THEME & LANGUAGE ---------- */
-window.setTheme = (bg, text='#fff') => {
-  document.documentElement.style.setProperty('--bg-color', bg);
-  document.documentElement.style.setProperty('--text-color', text);
-};
-
-window.translateUI = (lang) => {
-  alert('UI translation to ' + lang + ' coming soon!');
+/* LANGUAGE SWITCH (UI ONLY) */
+window.switchLanguage = () => {
+  const lang = languageSelect.value;
+  // placeholder for actual translation API
+  alert(`Switching UI to ${lang}`);
 };
 </script>
-
 </body>
 </html>
