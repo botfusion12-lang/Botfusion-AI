@@ -8,23 +8,26 @@
 <style>
 body{
   margin:0;
-  font-family:Arial, sans-serif;
+  font-family: Arial, sans-serif;
   background:#111;
-  color:#fff;
+  color:white;
 }
 
-/* Header */
+/* HEADER */
 .header{
+  background:#1f1f1f;
+  padding:12px 14px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:10px 14px;
-  background:#1f1f1f;
+  position:sticky;
+  top:0;
 }
-.icon-btn{font-size:22px;cursor:pointer;}
-.logo{font-size:22px;font-weight:700}
 
-/* Sidebar */
+.icon{font-size:24px;cursor:pointer;}
+.title{font-size:22px;font-weight:bold}
+
+/* SIDEBAR */
 .sidebar{
   position:fixed;
   top:0;
@@ -32,182 +35,206 @@ body{
   width:260px;
   height:100%;
   background:#141414;
+  padding:15px;
   transition:0.3s;
-  padding:14px;
-  box-shadow:2px 0 12px rgba(0,0,0,.6);
   z-index:20;
 }
-.sidebar.open{left:0}
-.close-btn{
-  text-align:right;
-  font-size:26px;
-  cursor:pointer;
-  margin-bottom:14px;
-}
-.sidebar a{
-  display:block;
-  padding:10px 8px;
-  margin-top:6px;
-  border-radius:6px;
-  color:#fff;
-  text-decoration:none;
-  background:#1f1f1f;
-}
-.sidebar a:hover{background:#2b2b2b}
+.sidebar.open{left:0;}
 
-/* Screens */
-.screen{display:none;padding:18px;}
-.screen.active{display:block;}
+.close{
+  font-size:26px;
+  text-align:right;
+  cursor:pointer;
+  margin-bottom:18px;
+}
+
+.sidebar button{
+  width:100%;
+  background:#1f1f1f;
+  color:white;
+  border:none;
+  padding:10px;
+  border-radius:10px;
+  margin-top:8px;
+  cursor:pointer;
+}
+.sidebar button:hover{background:#2a2a2a}
+
+/* OVERLAY */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;
+  z-index:15;
+}
+.overlay.show{display:block}
+
+/* MAIN SCREENS */
+.screen{padding:18px;}
+.hidden{display:none}
 
 .card{
   background:#1a1a1a;
   padding:14px;
   border-radius:10px;
   margin-top:10px;
-  cursor:pointer;
 }
 
-/* Login popup */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.7);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:30;
-}
-.popup{
-  background:#1b1b1b;
-  padding:18px;
+/* PROFILE */
+.profile-box{
+  background:#1a1a1a;
+  padding:14px;
   border-radius:10px;
-  width:90%;
-  max-width:360px;
 }
-.input{
-  width:100%;
-  padding:10px;
-  margin-top:8px;
-  border-radius:6px;
-  border:none;
+
+.profile-box img{
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  object-fit:cover;
 }
-.btn{
-  width:100%;
-  margin-top:10px;
-  padding:10px;
-  border:none;
-  border-radius:6px;
-  background:#3b82f6;
-  color:#fff;
-  font-weight:600;
-  cursor:pointer;
-}
-.google{
-  background:#db4437;
-}
-.small{opacity:.7;margin-top:8px;font-size:13px}
 </style>
 </head>
 
 <body>
 
+<!-- OVERLAY -->
+<div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
 <!-- SIDEBAR -->
 <div id="sidebar" class="sidebar">
-  <div class="close-btn" onclick="toggleSidebar()">×</div>
+  <div class="close" onclick="toggleSidebar()">×</div>
 
-  <a onclick="openScreen('home')">🏠 Home</a>
-  <a onclick="openScreen('chat')">💬 Start chatting</a>
-  <a onclick="openScreen('profile')">👤 Profile</a>
-  <a onclick="openScreen('manage')">📄 Manage account</a>
-  <a onclick="openScreen('settings')">⚙️ Settings</a>
-  <a onclick="openLogin()">🔐 Login</a>
+  <button onclick="showScreen('home')">🏠 Home</button>
+  <button onclick="showScreen('chat')">💬 Start chatting</button>
+  <button onclick="showScreen('profile')">👤 View profile</button>
+  <button onclick="showScreen('account')">📄 Manage account</button>
+  <button onclick="showScreen('settings')">⚙️ Settings</button>
+
+  <hr>
+
+  <button id="loginBtn" onclick="googleLogin()">🔑 Login with Google</button>
+  <button id="logoutBtn" onclick="logout()" style="display:none;">🚪 Logout</button>
 </div>
 
 <!-- HEADER -->
 <div class="header">
-  <span class="icon-btn" onclick="toggleSidebar()">☰</span>
-  <div class="logo">BotFusion</div>
+  <span class="icon" onclick="toggleSidebar()">☰</span>
+  <div class="title">BotFusion</div>
   <span>🏠</span>
 </div>
 
 <!-- HOME -->
-<div id="home" class="screen active">
+<div id="home" class="screen">
   <h2>Welcome 👋</h2>
   <p>What would you like to do?</p>
 
-  <div class="card" onclick="openScreen('chat')">💬 Start chatting</div>
-  <div class="card" onclick="openScreen('profile')">👤 View profile</div>
-  <div class="card" onclick="openScreen('manage')">📄 Manage account</div>
-  <div class="card" onclick="openScreen('settings')">⚙️ Settings</div>
+  <div class="card" onclick="showScreen('chat')">💬 Start chatting</div>
+  <div class="card" onclick="showScreen('profile')">👤 View profile</div>
+  <div class="card" onclick="showScreen('account')">📄 Manage account</div>
+  <div class="card" onclick="showScreen('settings')">⚙️ Settings</div>
 
-  <p class="small">BotFusion — frontend only (backend next)</p>
+  <p style="opacity:.6;margin-top:18px">
+    BotFusion — frontend + Google login (backend next)
+  </p>
 </div>
 
 <!-- CHAT -->
-<div id="chat" class="screen">
-  <h2>💬 Chat</h2>
-  <p>This will connect to backend later.</p>
+<div id="chat" class="screen hidden">
+  <h3>💬 Chat</h3>
+  <p>Chatbot backend will be added next.</p>
 </div>
 
 <!-- PROFILE -->
-<div id="profile" class="screen">
-  <h2>👤 Your Profile</h2>
-  <p>Name: (will come from backend)</p>
-</div>
-
-<!-- MANAGE -->
-<div id="manage" class="screen">
-  <h2>📄 Manage Account</h2>
-  <p>Change password, delete account (later).</p>
-</div>
-
-<!-- SETTINGS -->
-<div id="settings" class="screen">
-  <h2>⚙️ Settings</h2>
-  <p>Theme, notifications — coming later.</p>
-</div>
-
-<!-- LOGIN POPUP -->
-<div id="loginBox" class="overlay">
-  <div class="popup">
-    <h3>Login</h3>
-
-    <input class="input" placeholder="Email" />
-    <input class="input" placeholder="Password" type="password" />
-
-    <button class="btn" onclick="fakeLogin()">Login</button>
-    <button class="btn google" onclick="fakeGoogle()">Continue with Google</button>
-
-    <div class="small" onclick="closeLogin()" style="text-align:center;cursor:pointer">
-      Close
-    </div>
+<div id="profile" class="screen hidden">
+  <h3>Your Profile</h3>
+  <div id="profileBox" class="profile-box">
+    <p>Login to see profile.</p>
   </div>
 </div>
 
-<script>
-function toggleSidebar(){
-  document.getElementById("sidebar").classList.toggle("open");
-}
+<!-- ACCOUNT -->
+<div id="account" class="screen hidden">
+  <h3>Manage Account</h3>
+  <p>Edit account features will be here.</p>
+</div>
 
-function openScreen(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+<!-- SETTINGS -->
+<div id="settings" class="screen hidden">
+  <h3>Settings</h3>
+
+  <p>🌗 Theme / Dark mode (default)</p>
+  <p>🌍 Language switch (coming)</p>
+  <p>ℹ️ About BotFusion</p>
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+/* 🔥 PASTE YOUR FIREBASE CONFIG HERE */
+const firebaseConfig = {
+  apiKey: "AIzaSyDA62eN5MEjX9Z-gw6w9UuR8L-Ke_6J7eE",
+  authDomain: "botfusion-ai-bd6d0.firebaseapp.com",
+  projectId: "botfusion-ai-bd6d0",
+  storageBucket: "botfusion-ai-bd6d0.firebasestorage.app",
+  messagingSenderId: "730477136598",
+  appId: "1:730477136598:web:c6b4e0d495744d12079777",
+  measurementId: "G-53FTWNQB8X"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+/* ELEMENTS */
+const sidebar=document.getElementById("sidebar");
+const overlay=document.getElementById("overlay");
+const loginBtn=document.getElementById("loginBtn");
+const logoutBtn=document.getElementById("logoutBtn");
+const profileBox=document.getElementById("profileBox");
+
+/* SIDEBAR */
+window.toggleSidebar=()=>{
+  sidebar.classList.toggle("open");
+  overlay.classList.toggle("show");
+};
+
+/* SCREENS */
+window.showScreen=(id)=>{
+  document.querySelectorAll(".screen").forEach(s=>s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
   toggleSidebar();
-}
+};
 
-/* Login popup */
-function openLogin(){document.getElementById("loginBox").style.display="flex";}
-function closeLogin(){document.getElementById("loginBox").style.display="none";}
+/* LOGIN */
+window.googleLogin=async()=>{
+  try{ await signInWithPopup(auth,provider); }
+  catch(e){ alert(e.message); }
+};
 
-/* Fake (frontend only) */
-function fakeLogin(){
-  alert("Login will work after backend.");
-  closeLogin();
-}
-function fakeGoogle(){
-  alert("Google login will be added in backend step.");
-  closeLogin();
-}
+window.logout=()=>signOut(auth);
+
+/* LISTEN USER */
+onAuthStateChanged(auth,user=>{
+  if(user){
+    loginBtn.style.display="none";
+    logoutBtn.style.display="block";
+
+    profileBox.innerHTML=`
+      <img src="${user.photoURL||''}">
+      <p><b>${user.displayName||''}</b></p>
+      <p>${user.email||''}</p>
+    `;
+  }else{
+    loginBtn.style.display="block";
+    logoutBtn.style.display="none";
+    profileBox.innerHTML=`<p>Login to see profile.</p>`;
+  }
+});
 </script>
 
 </body>
