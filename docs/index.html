@@ -1,50 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Botfusion AI</title>
 <style>
 :root {
   --bg-color: #2a2a2a;
-  --header-color: #1f1f1f;
+  --text-color: #fff;
   --sidebar-color: #111;
   --card-color: #1f1f1f;
-  --button-color: #2a2a2a;
-  --button-hover: #3a3a3a;
-  --text-color: white;
 }
 
+/* ---------- GLOBAL ---------- */
 body {
-  margin:0;
+  margin: 0;
   font-family: Arial, sans-serif;
   background: var(--bg-color);
   color: var(--text-color);
-  overflow-x: hidden;
 }
 
-/* HEADER */
-.header{
-  display:flex;
-  align-items:center;
-  padding:12px 16px;
-  background: var(--header-color);
-  position: fixed;
-  width: 100%;
+/* ---------- HEADER ---------- */
+.header {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: #1f1f1f;
+  position: sticky;
   top: 0;
-  z-index: 999;
+  z-index: 900;
 }
-.hamburger{
-  font-size:24px;
-  cursor:pointer;
-  margin-right:12px;
+.hamburger {
+  font-size: 24px;
+  cursor: pointer;
+  margin-right: 12px;
 }
 
-/* SIDEBAR */
+/* ---------- SIDEBAR ---------- */
 .sidebar {
   position: fixed;
   top: 0;
-  left: -280px; /* fully hidden */
+  left: -300px; /* fully hidden */
   width: 280px;
   height: 100vh;
   background: var(--sidebar-color);
@@ -56,61 +52,46 @@ body {
 .sidebar.open {
   left: 0;
 }
-.sidebar-close {
-  text-align: right;
+.sidebar button {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  background: #2a2a2a;
+  color: white;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 20px;
+}
+.sidebar button:hover {
+  background: #3a3a3a;
+}
+.sidebar .close-btn {
+  background: #ff4d4d;
+  margin-bottom: 16px;
+}
+
+/* ---------- HOME CARDS ---------- */
+.home-cards {
+  padding: 20px;
+}
+.card {
+  background: var(--card-color);
+  padding: 18px;
+  border-radius: 10px;
   margin-bottom: 10px;
 }
-.sidebar button{
-  width:100%;
-  padding:10px;
-  margin:6px 0;
-  background: var(--button-color);
-  color: var(--text-color);
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-}
-.sidebar button:hover{
-  background: var(--button-hover);
-}
 
-/* HOME CARDS */
-.main-content{
-  padding:80px 20px 20px 20px;
+/* ---------- PROFILE ---------- */
+#profile-section {
+  display: none;
+  padding: 20px;
 }
-.card{
-  background: var(--card-color);
-  padding:18px;
-  border-radius:10px;
-  margin-bottom:10px;
-}
-
-/* PROFILE */
-#profile-section{
-  display:none;
-  padding:20px;
-}
-#profile-info img{
-  width:75px;
-  height:75px;
-  border-radius:50%;
-  margin-bottom:10px;
-  object-fit:cover;
-}
-
-/* THEME / LANGUAGE SWITCH */
-.switch-label{
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  margin:10px 0;
-}
-select{
-  padding:5px;
-  border-radius:5px;
-  border:none;
+#profile-info img {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  object-fit: cover;
 }
 </style>
 </head>
@@ -124,63 +105,54 @@ select{
 
 <!-- SIDEBAR -->
 <div id="sidebar" class="sidebar">
-  <div class="sidebar-close" onclick="closeSidebar()">✖</div>
+  <button class="close-btn" onclick="closeSidebar()">✖ Close</button>
   <button onclick="showHome()">🏠 Home</button>
   <button onclick="startChat()">💬 Start Chatting</button>
   <button onclick="showProfile()">👤 View Profile</button>
   <button onclick="manageAccount()">⚙ Manage Account</button>
   <button onclick="openSettings()">🛠 Settings</button>
-
   <hr>
-
-  <div class="switch-label">
-    Theme:
-    <select id="themeSelect" onchange="switchTheme()">
-      <option value="dark">Dark (default)</option>
-      <option value="light">Light</option>
-      <option value="blue">Blue</option>
-      <option value="green">Green</option>
-      <option value="purple">Purple</option>
-    </select>
-  </div>
-
-  <div class="switch-label">
-    Language:
-    <select id="languageSelect" onchange="switchLanguage()">
-      <option value="en">English</option>
-      <option value="hi">Hindi</option>
-      <option value="es">Spanish</option>
-      <option value="fr">French</option>
-      <option value="de">German</option>
-      <!-- Add 100+ languages -->
-    </select>
-  </div>
-
+  <label>Theme:</label>
+  <select id="themeSelect" onchange="switchTheme()">
+    <option value="dark" selected>Dark</option>
+    <option value="light">Light</option>
+    <option value="blue">Blue</option>
+    <option value="green">Green</option>
+    <option value="purple">Purple</option>
+  </select>
+  <br><br>
+  <label>Language:</label>
+  <select id="langSelect" onchange="switchLanguage()">
+    <option value="en" selected>English</option>
+    <option value="es">Spanish</option>
+    <option value="fr">French</option>
+    <!-- Add 100+ languages here -->
+  </select>
+  <hr>
   <button id="loginBtn" onclick="googleLogin()">🔑 Login with Google</button>
   <button id="logoutBtn" onclick="logout()" style="display:none;">🚪 Logout</button>
 </div>
 
-<!-- MAIN CONTENT -->
-<div class="main-content">
-  <div id="home">
-    <div class="card">✨ Start chatting smarter</div>
-    <div class="card">🤖 AI help whenever you need</div>
-    <div class="card">⚡ Fast, modern experience</div>
-  </div>
-
-  <div id="profile-section">
-    <h3>Your Profile</h3>
-    <div id="profile-info"></div>
-  </div>
+<!-- HOME -->
+<div id="home" class="home-cards">
+  <div class="card">✨ Start chatting smarter</div>
+  <div class="card">🤖 AI help whenever you need</div>
+  <div class="card">⚡ Fast, modern experience</div>
 </div>
 
-<!-- FIREBASE + SCRIPT -->
+<!-- PROFILE -->
+<div id="profile-section">
+  <h3>Your Profile</h3>
+  <div id="profile-info"></div>
+</div>
+
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-/* FIREBASE CONFIG */
+/* ---------- FIREBASE CONFIG ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyDA62eN5MEjX9Z-gw6w9UuR8L-Ke_6J7eE",
   authDomain: "botfusion-ai-bd6d0.firebaseapp.com",
@@ -195,31 +167,18 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-/* ELEMENTS */
+/* ---------- ELEMENTS ---------- */
 const sidebar = document.getElementById("sidebar");
 const home = document.getElementById("home");
 const profileSection = document.getElementById("profile-section");
 const profileInfo = document.getElementById("profile-info");
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
-const themeSelect = document.getElementById("themeSelect");
-const languageSelect = document.getElementById("languageSelect");
 
-/* SIDEBAR CONTROLS */
-window.toggleSidebar = () => {
-  if (sidebar.classList.contains("open")) {
-    closeSidebar();
-  } else {
-    sidebar.classList.add("open");
-    sidebar.style.left = "0";
-  }
-};
-window.closeSidebar = () => {
-  sidebar.classList.remove("open");
-  sidebar.style.left = "-280px";
-};
+/* ---------- UI CONTROLS ---------- */
+window.toggleSidebar = () => sidebar.classList.add("open");
+window.closeSidebar = () => sidebar.classList.remove("open");
 
-/* VIEW FUNCTIONS */
 window.showHome = () => {
   home.style.display = "block";
   profileSection.style.display = "none";
@@ -228,83 +187,52 @@ window.showProfile = () => {
   home.style.display = "none";
   profileSection.style.display = "block";
 };
-window.startChat = () => alert("Chat feature coming soon!");
+window.startChat = () => alert("Chat screen coming soon!");
 window.manageAccount = () => alert("Account manager coming soon!");
 window.openSettings = () => alert("Settings coming soon!");
 
-/* GOOGLE LOGIN */
-window.googleLogin = async () => {
-  try { await signInWithPopup(auth, provider); } 
-  catch(err){ alert(err.message); }
+/* ---------- THEME SWITCH ---------- */
+window.switchTheme = () => {
+  const theme = document.getElementById("themeSelect").value;
+  if (theme === "dark") document.documentElement.style.setProperty('--bg-color','#2a2a2a');
+  else if (theme === "light") document.documentElement.style.setProperty('--bg-color','#f5f5f5');
+  else if (theme === "blue") document.documentElement.style.setProperty('--bg-color','#1e3a8a');
+  else if (theme === "green") document.documentElement.style.setProperty('--bg-color','#065f46');
+  else if (theme === "purple") document.documentElement.style.setProperty('--bg-color','#6b21a8');
 };
-window.logout = async () => { await signOut(auth); };
 
-/* LOGIN STATE */
+/* ---------- LANGUAGE SWITCH (placeholder) ---------- */
+window.switchLanguage = () => {
+  const lang = document.getElementById("langSelect").value;
+  alert("Switching language to: " + lang);
+};
+
+/* ---------- GOOGLE LOGIN ---------- */
+window.googleLogin = async () => {
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (err) {
+    alert(err.message);
+  }
+};
+window.logout = async () => await signOut(auth);
+
 onAuthStateChanged(auth, (user) => {
-  if(user){
+  if (user) {
     loginBtn.style.display = "none";
     logoutBtn.style.display = "block";
-    profileInfo.innerHTML = `<img src="${user.photoURL||''}"><p><b>${user.displayName}</b></p><p>${user.email}</p>`;
+    profileInfo.innerHTML = `
+      <img src="${user.photoURL || ""}">
+      <p><b>${user.displayName}</b></p>
+      <p>${user.email}</p>
+    `;
   } else {
     loginBtn.style.display = "block";
     logoutBtn.style.display = "none";
     profileInfo.innerHTML = "";
   }
 });
-
-/* THEME SWITCH */
-window.switchTheme = () => {
-  const val = themeSelect.value;
-  switch(val){
-    case "dark":
-      document.documentElement.style.setProperty('--bg-color','#2a2a2a');
-      document.documentElement.style.setProperty('--header-color','#1f1f1f');
-      document.documentElement.style.setProperty('--sidebar-color','#111');
-      document.documentElement.style.setProperty('--card-color','#1f1f1f');
-      document.documentElement.style.setProperty('--button-color','#2a2a2a');
-      document.documentElement.style.setProperty('--button-hover','#3a3a3a');
-      break;
-    case "light":
-      document.documentElement.style.setProperty('--bg-color','#f5f5f5');
-      document.documentElement.style.setProperty('--header-color','#ddd');
-      document.documentElement.style.setProperty('--sidebar-color','#eee');
-      document.documentElement.style.setProperty('--card-color','#fff');
-      document.documentElement.style.setProperty('--button-color','#ddd');
-      document.documentElement.style.setProperty('--button-hover','#ccc');
-      break;
-    case "blue":
-      document.documentElement.style.setProperty('--bg-color','#1e2a38');
-      document.documentElement.style.setProperty('--header-color','#15202b');
-      document.documentElement.style.setProperty('--sidebar-color','#0d161f');
-      document.documentElement.style.setProperty('--card-color','#203040');
-      document.documentElement.style.setProperty('--button-color','#1a2a3a');
-      document.documentElement.style.setProperty('--button-hover','#2a3a50');
-      break;
-    case "green":
-      document.documentElement.style.setProperty('--bg-color','#1f3320');
-      document.documentElement.style.setProperty('--header-color','#162214');
-      document.documentElement.style.setProperty('--sidebar-color','#0e1c0e');
-      document.documentElement.style.setProperty('--card-color','#203020');
-      document.documentElement.style.setProperty('--button-color','#1a2a1a');
-      document.documentElement.style.setProperty('--button-hover','#2a5030');
-      break;
-    case "purple":
-      document.documentElement.style.setProperty('--bg-color','#2a1f2a');
-      document.documentElement.style.setProperty('--header-color','#1b121b');
-      document.documentElement.style.setProperty('--sidebar-color','#120c12');
-      document.documentElement.style.setProperty('--card-color','#301f30');
-      document.documentElement.style.setProperty('--button-color','#3a2a3a');
-      document.documentElement.style.setProperty('--button-hover','#502a50');
-      break;
-  }
-};
-
-/* LANGUAGE SWITCH (UI ONLY) */
-window.switchLanguage = () => {
-  const lang = languageSelect.value;
-  // placeholder for actual translation API
-  alert(`Switching UI to ${lang}`);
-};
 </script>
+
 </body>
 </html>
