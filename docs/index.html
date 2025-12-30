@@ -1,131 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BotFusion</title>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
 <style>
-:root {
-  --bg: #1f1f1f;
-  --card: #2b2b2b;
-  --text: #ffffff;
-  --muted: #bdbdbd;
-  --accent: #4caf50;
-}
+/* ========== THEMES ========== */
+body.theme-dark {--bg:#1f1f1f;--card:#2b2b2b;--text:#fff;--muted:#aaa;--accent:#4caf50;}
+body.theme-light{--bg:#f4f4f4;--card:#fff;--text:#000;--muted:#555;--accent:#2196f3;}
+body.theme-ocean{--bg:#0a192f;--card:#112240;--text:#ccd6f6;--muted:#8892b0;--accent:#64ffda;}
+body.theme-forest{--bg:#0f1f14;--card:#1c3326;--text:#eaffea;--muted:#9fb8a0;--accent:#4caf50;}
+body.theme-sunset{--bg:#2b0f14;--card:#3f1b22;--text:#ffe6e6;--muted:#ffb3b3;--accent:#ff7043;}
 
-body.light {
-  --bg: #f5f5f5;
-  --card: #ffffff;
-  --text: #000000;
-  --muted: #555;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
+body{
+  margin:0;font-family:Arial;background:var(--bg);color:var(--text);
 }
 
 /* HEADER */
-header {
-  display: flex;
-  align-items: center;
-  padding: 14px;
-  background: #2a2a2a;
+header{
+  display:flex;align-items:center;padding:14px;background:#2a2a2a;
 }
-header h1 {
-  flex: 1;
-  text-align: center;
-  margin: 0;
-}
-.icon-btn {
-  font-size: 22px;
-  cursor: pointer;
-}
+header h1{flex:1;text-align:center;margin:0;}
+.icon{font-size:22px;cursor:pointer;}
 
 /* SIDEBAR */
-#sidebar {
-  position: fixed;
-  top: 0;
-  left: -300px;
-  width: 260px;
-  height: 100%;
-  background: #121212;
-  padding: 20px;
-  transition: left 0.3s ease;
-  z-index: 1000;
+#sidebar{
+  position:fixed;top:0;left:-280px;width:280px;height:100%;
+  background:#111;padding:20px;transition:0.3s;z-index:1000;
 }
-#sidebar.open {
-  left: 0;
-}
-#sidebar .close {
-  text-align: right;
-  font-size: 22px;
-  cursor: pointer;
-}
-#sidebar button {
-  width: 100%;
-  margin: 10px 0;
-  padding: 12px;
-  background: var(--card);
-  color: var(--text);
-  border:none
-  border-radius: 8px;
-  cursor: pointer;
+#sidebar.open{left:0;}
+#sidebar .close{text-align:right;font-size:22px;cursor:pointer;}
+#sidebar button{
+  width:100%;margin:8px 0;padding:12px;
+  background:var(--card);color:var(--text);
+  border:none;border-radius:10px;cursor:pointer;
 }
 
 /* MAIN */
-main {
-  padding: 16px;
-}
-.card {
-  background: var(--card);
-  padding: 16px;
-  border-radius: 12px;
-  margin-bottom: 14px;
-  cursor: pointer;
+main{padding:16px;}
+.card{
+  background:var(--card);padding:16px;border-radius:14px;
+  margin-bottom:14px;cursor:pointer;
 }
 
 /* SCREENS */
-.screen {
-  display: none;
-}
-.screen.active {
-  display: block;
-}
+.screen{display:none;}
+.screen.active{display:block;}
 
 /* CHAT */
-.chat-box {
-  height: 250px;
-  border: 1px dashed var(--muted);
-  border-radius: 10px;
-  padding: 10px;
-  margin-bottom: 10px;
+.chat-box{
+  height:250px;border:1px dashed var(--muted);
+  border-radius:10px;padding:10px;margin-bottom:10px;
 }
-input, select {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border-radius: 8px;
-  border: none;
+input,select{
+  width:100%;padding:10px;border-radius:8px;border:none;margin-bottom:10px;
 }
-
-/* BUTTON */
-.btn {
-  background: var(--accent);
-  color: #fff;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  width: 100%;
-  cursor: pointer;
+.btn{
+  width:100%;padding:10px;background:var(--accent);
+  border:none;color:white;border-radius:8px;
 }
 </style>
 </head>
 
-<body class="dark">
+<body class="theme-dark">
 
 <!-- SIDEBAR -->
 <div id="sidebar">
@@ -134,54 +76,53 @@ input, select {
   <button onclick="showScreen('chat')">💬 Chat</button>
   <button onclick="showScreen('profile')">👤 Profile</button>
   <button onclick="showScreen('account')">🪪 Account</button>
-  <button onclick="showScreen('settings')">⚙️ Settings</button>
+  <button onclick="showScreen('settings')">⚙ Settings</button>
 </div>
 
-<!-- HEADER -->
 <header>
-  <div class="icon-btn" onclick="toggleSidebar()">☰</div>
+  <div class="icon" onclick="toggleSidebar()">☰</div>
   <h1>BotFusion</h1>
-  <div class="icon-btn">🏠</div>
+  <div class="icon" onclick="showScreen('home')">🏠</div>
 </header>
 
-<!-- MAIN -->
 <main>
 
 <!-- HOME -->
 <div id="home" class="screen active">
-  <h2>Welcome 👋</h2>
-  <p>What would you like to do?</p>
+  <h2 id="welcomeText">Welcome 👋</h2>
+  <p id="questionText">What would you like to do?</p>
 
   <div class="card" onclick="showScreen('chat')">💬 Start chatting</div>
   <div class="card" onclick="showScreen('profile')">👤 View profile</div>
   <div class="card" onclick="showScreen('account')">🪪 Manage account</div>
-  <div class="card" onclick="showScreen('settings')">⚙️ Settings</div>
+  <div class="card" onclick="showScreen('settings')">⚙ Settings</div>
 
-  <p style="text-align:center;color:var(--muted)">
-    BotFusion — frontend only (backend next)
-  </p>
+  <button class="btn" onclick="googleLogin()">🔐 Sign in with Google</button>
+  <button class="btn" onclick="logout()">🚪 Logout</button>
+
+  <p style="text-align:center;color:var(--muted)">BotFusion — frontend only</p>
 </div>
 
 <!-- CHAT -->
 <div id="chat" class="screen">
   <h2>Chat</h2>
   <div class="chat-box"></div>
-  <input placeholder="Type your message..." />
+  <input placeholder="Type message...">
   <button class="btn">Send</button>
 </div>
 
 <!-- PROFILE -->
 <div id="profile" class="screen">
   <h2>Profile</h2>
-  <p><b>Name:</b> Guest User</p>
-  <p><b>Email:</b> guest@botfusion.ai</p>
+  <p><b>Name:</b> <span id="pName">Guest</span></p>
+  <p><b>Email:</b> <span id="pEmail">Not logged in</span></p>
 </div>
 
 <!-- ACCOUNT -->
 <div id="account" class="screen">
   <h2>Manage Account</h2>
-  <input placeholder="Change name" />
-  <input placeholder="Change email" />
+  <input placeholder="Change name">
+  <input placeholder="Change email">
   <button class="btn">Save</button>
 </div>
 
@@ -190,44 +131,81 @@ input, select {
   <h2>Settings</h2>
 
   <label>Theme</label>
-  <select onchange="changeTheme(this.value)">
-    <option value="dark">Dark (Default)</option>
-    <option value="light">Light</option>
+  <select onchange="setTheme(this.value)">
+    <option value="theme-dark">Dark</option>
+    <option value="theme-light">Light</option>
+    <option value="theme-ocean">Ocean</option>
+    <option value="theme-forest">Forest</option>
+    <option value="theme-sunset">Sunset</option>
   </select>
 
-  <label>Language</label>
+  <label>Language (100)</label>
   <select>
-    <option>English</option>
-    <option>Hindi</option>
-    <option>Marathi</option>
-    <option>Spanish</option>
-    <option>French</option>
+    <option>English</option><option>Hindi</option><option>Marathi</option>
+    <option>Gujarati</option><option>Bengali</option><option>Tamil</option>
+    <option>Telugu</option><option>Kannada</option><option>Malayalam</option>
+    <option>Punjabi</option><option>Urdu</option><option>Sanskrit</option>
+    <option>Spanish</option><option>French</option><option>German</option>
+    <option>Italian</option><option>Portuguese</option><option>Russian</option>
+    <option>Chinese</option><option>Japanese</option><option>Korean</option>
+    <option>Arabic</option><option>Turkish</option><option>Vietnamese</option>
+    <option>Thai</option><option>Indonesian</option><option>Dutch</option>
+    <option>Greek</option><option>Hebrew</option><option>Polish</option>
+    <option>Czech</option><option>Hungarian</option><option>Romanian</option>
+    <option>Bulgarian</option><option>Ukrainian</option><option>Swahili</option>
+    <option>Afrikaans</option><option>Zulu</option><option>Latin</option>
   </select>
-
-  <p style="color:var(--muted)">
-    BotFusion AI<br>
-  
-   License: Apache 2.0<br>
-    Use cases: Chat, AI, Automation
-  </p>
 </div>
 
 </main>
 
 <script>
-function toggleSidebar() {
-  document.getElementById("sidebar").classList.toggle("open");
+/* FIREBASE CONFIG */
+firebase.initializeApp({
+  apiKey:"AIzaSyDA62eN5MEjX9Z-gw6w9UuR8L-Ke_6J7eE",
+  authDomain:"botfusion-ai-bd6d0.firebaseapp.com",
+  projectId:"botfusion-ai-bd6d0",
+  storageBucket:"botfusion-ai-bd6d0.firebasestorage.app",
+  messagingSenderId:"730477136598",
+  appId:"1:730477136598:web:c6b4e0d495744d12079777"
+});
+
+const auth = firebase.auth();
+
+/* UI FUNCTIONS */
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
 }
 
-function showScreen(id) {
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  document.getElementById("sidebar").classList.remove("open");
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('sidebar').classList.remove('open');
 }
 
-function changeTheme(t) {
-  document.body.className = t;
+function setTheme(t){
+  document.body.className=t;
 }
+
+/* GOOGLE LOGIN */
+function googleLogin(){
+  const provider=new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider);
+}
+
+function logout(){
+  auth.signOut();
+}
+
+auth.onAuthStateChanged(user=>{
+  if(user){
+    document.getElementById('pName').innerText=user.displayName;
+    document.getElementById('pEmail').innerText=user.email;
+  }else{
+    document.getElementById('pName').innerText="Guest";
+    document.getElementById('pEmail').innerText="Not logged in";
+  }
+});
 </script>
 
 </body>
