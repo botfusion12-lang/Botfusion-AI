@@ -1,18 +1,18 @@
-self.addEventListener("install", e => {
-  e.waitUntil(
-    caches.open("botfusion-cache").then(cache => {
-      return cache.addAll([
-        "./",
-        "./index.html",
-        "./style.css",
-        "./app.js"
-      ]);
-    })
+const CACHE_NAME = "botfusion-v1";
+const ASSETS = [
+  "./",
+  "./index.html",
+  "./manifest.json"
+];
+
+self.addEventListener("install", event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
 });
 
-self.addEventListener("fetch", e => {
-  e.respondWith(
-    caches.match(e.request).then(response => response || fetch(e.request))
+self.addEventListener("fetch", event => {
+  event.respondWith(
+    caches.match(event.request).then(res => res || fetch(event.request))
   );
 });
