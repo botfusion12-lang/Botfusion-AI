@@ -249,6 +249,10 @@ window.sendMessage = async () => {
   chatBox.lastChild.innerText = data.reply;
 };
 </script>
-
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./service-worker.js");
+}
+</script>
 </body>
 </html>
